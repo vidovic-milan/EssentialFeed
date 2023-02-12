@@ -3,13 +3,17 @@ import XCTest
 
 class RemoteFeedLoader {
     func load() {
-        HTTPClient.shared.requestedURL = URL(string: "https://a-url.com")!
+        HTTPClient.shared.get(from: URL(string: "https://a-url.com")!)
     }
 }
 
 class HTTPClient {
     static let shared = HTTPClient()
     var requestedURL: URL?
+
+    func get(from url: URL) {
+        requestedURL = url
+    }
 }
 
 class RemoteFeedLoaderTests: XCTestCase {
