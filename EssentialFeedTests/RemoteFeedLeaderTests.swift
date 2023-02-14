@@ -28,24 +28,24 @@ class RemoteFeedLoaderTests: XCTestCase {
     }
 
     func test_load_shouldReturnErrorOnClientError() {
-        var invokedError: RemoteFeedLoader.Error?
         let (sut, client) = makeSUT()
 
-        sut.load(completion: { invokedError = $0 })
+        var invokedErrors: [RemoteFeedLoader.Error] = []
+        sut.load(completion: { invokedErrors.append($0) })
         client.complete(with: NSError(domain: "Test", code: 0))
 
-        XCTAssertEqual(invokedError, .connectivity)
+        XCTAssertEqual(invokedErrors, [.connectivity])
     }
 
     func test_load_shouldReturnErrorOnInvalidResponseCode() {
         [199, 201, 300, 400, 500].forEach { code in
-            var invokedError: RemoteFeedLoader.Error?
             let (sut, client) = makeSUT()
 
-            sut.load(completion: { invokedError = $0 })
+            var invokedErrors: [RemoteFeedLoader.Error] = []
+            sut.load(completion: { invokedErrors.append($0) })
             client.complete(with: HTTPURLResponse(url: URL(string: "https://a-url.com")!, statusCode: code, httpVersion: nil, headerFields: nil)!)
 
-            XCTAssertEqual(invokedError, .invalidData)
+            XCTAssertEqual(invokedErrors, [.invalidData])
         }
     }
 
