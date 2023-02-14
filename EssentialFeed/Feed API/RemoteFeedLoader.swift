@@ -25,7 +25,7 @@ public final class RemoteFeedLoader {
 }
 
 public enum HTTPClientResponse {
-    case success(HTTPURLResponse)
+    case success(HTTPURLResponse, Data)
     case failure(Error)
 }
 
