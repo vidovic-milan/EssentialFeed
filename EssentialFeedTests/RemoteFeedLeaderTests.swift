@@ -5,7 +5,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     func test_init_shouldNotGetFromURL() {
         let (_, client) = makeSUT()
 
-        XCTAssertTrue(client.getFromUrlInvocations.isEmpty)
+        XCTAssertTrue(client.requestedURLs().isEmpty)
     }
 
     func test_load_shouldRequestFromURL() {
@@ -14,7 +14,7 @@ class RemoteFeedLoaderTests: XCTestCase {
 
         sut.load()
 
-        XCTAssertEqual(client.getFromUrlInvocations.map { $0.url }, [url])
+        XCTAssertEqual(client.requestedURLs(), [url])
     }
 
     func test_loadTwice_shouldRequestFromURLTwice() {
@@ -24,7 +24,7 @@ class RemoteFeedLoaderTests: XCTestCase {
         sut.load()
         sut.load()
 
-        XCTAssertEqual(client.getFromUrlInvocations.map { $0.url }, [url, url])
+        XCTAssertEqual(client.requestedURLs(), [url, url])
     }
 
     func test_load_shouldReturnErrorOnClientError() {
@@ -32,7 +32,7 @@ class RemoteFeedLoaderTests: XCTestCase {
         let (sut, client) = makeSUT()
 
         sut.load(completion: { invokedError = $0 })
-        client.getFromUrlInvocations.first?.completion(NSError(domain: "Test", code: 0))
+        client.completion()(NSError(domain: "Test", code: 0))
 
         XCTAssertEqual(invokedError, .connectivity)
     }
@@ -48,6 +48,16 @@ class RemoteFeedLoaderTests: XCTestCase {
         var getFromUrlInvocations: [(url: URL, completion: (Error)-> Void)] = []
         func get(from url: URL, completion: @escaping (Error) -> Void) {
             getFromUrlInvocations.append((url, completion))
+        }
+
+        // MARK: - Helpers
+
+        func completion(at index: Int = 0) -> ((Error) -> Void) {
+            return getFromUrlInvocations[index].completion
+        }
+
+        func requestedURLs() -> [URL] {
+            getFromUrlInvocations.map { $0.url }
         }
     }
 }
