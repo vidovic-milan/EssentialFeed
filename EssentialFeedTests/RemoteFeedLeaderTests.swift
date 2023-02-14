@@ -32,7 +32,7 @@ class RemoteFeedLoaderTests: XCTestCase {
         let (sut, client) = makeSUT()
 
         sut.load(completion: { invokedError = $0 })
-        client.completion()(NSError(domain: "Test", code: 0))
+        client.completion(with: NSError(domain: "Test", code: 0))
 
         XCTAssertEqual(invokedError, .connectivity)
     }
@@ -52,8 +52,8 @@ class RemoteFeedLoaderTests: XCTestCase {
 
         // MARK: - Helpers
 
-        func completion(at index: Int = 0) -> ((Error) -> Void) {
-            return getFromUrlInvocations[index].completion
+        func completion(with error: Error, at index: Int = 0) {
+            return getFromUrlInvocations[index].completion(error)
         }
 
         func requestedURLs() -> [URL] {
