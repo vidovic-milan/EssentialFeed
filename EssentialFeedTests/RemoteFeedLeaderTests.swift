@@ -38,12 +38,12 @@ class RemoteFeedLoaderTests: XCTestCase {
     }
 
     func test_load_shouldReturnErrorOnInvalidResponseCode() {
-        [199, 201, 300, 400, 500].forEach { code in
-            let (sut, client) = makeSUT()
+        let (sut, client) = makeSUT()
 
+        [199, 201, 300, 400, 500].enumerated().forEach { value in
             var invokedErrors: [RemoteFeedLoader.Error] = []
             sut.load(completion: { invokedErrors.append($0) })
-            client.complete(with: code)
+            client.complete(with: value.element, at: value.offset)
 
             XCTAssertEqual(invokedErrors, [.invalidData])
         }
