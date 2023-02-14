@@ -38,13 +38,15 @@ class RemoteFeedLoaderTests: XCTestCase {
     }
 
     func test_load_shouldReturnErrorOnInvalidResponseCode() {
-        var invokedError: RemoteFeedLoader.Error?
-        let (sut, client) = makeSUT()
+        [199, 201, 300, 400, 500].forEach { code in
+            var invokedError: RemoteFeedLoader.Error?
+            let (sut, client) = makeSUT()
 
-        sut.load(completion: { invokedError = $0 })
-        client.complete(with: HTTPURLResponse(url: URL(string: "https://a-url.com")!, statusCode: 400, httpVersion: nil, headerFields: nil)!)
+            sut.load(completion: { invokedError = $0 })
+            client.complete(with: HTTPURLResponse(url: URL(string: "https://a-url.com")!, statusCode: code, httpVersion: nil, headerFields: nil)!)
 
-        XCTAssertEqual(invokedError, .invalidData)
+            XCTAssertEqual(invokedError, .invalidData)
+        }
     }
 
     // MARK: - Helpers
