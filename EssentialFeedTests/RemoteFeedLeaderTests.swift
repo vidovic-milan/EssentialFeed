@@ -32,9 +32,19 @@ class RemoteFeedLoaderTests: XCTestCase {
         let (sut, client) = makeSUT()
 
         sut.load(completion: { invokedError = $0 })
-        client.completion(with: NSError(domain: "Test", code: 0))
+        client.complete(with: NSError(domain: "Test", code: 0))
 
         XCTAssertEqual(invokedError, .connectivity)
+    }
+
+    func test_load_shouldReturnErrorOnInvalidResponseCode() {
+        var invokedError: RemoteFeedLoader.Error?
+        let (sut, client) = makeSUT()
+
+        sut.load(completion: { invokedError = $0 })
+        client.complete(with: HTTPURLResponse(url: URL(string: "https://a-url.com")!, statusCode: 400, httpVersion: nil, headerFields: nil)!)
+
+        XCTAssertEqual(invokedError, .invalidData)
     }
 
     // MARK: - Helpers
@@ -45,15 +55,19 @@ class RemoteFeedLoaderTests: XCTestCase {
     }
 
     private class HTTPClientSpy: HTTPClient {
-        var getFromUrlInvocations: [(url: URL, completion: (Error)-> Void)] = []
-        func get(from url: URL, completion: @escaping (Error) -> Void) {
+        var getFromUrlInvocations: [(url: URL, completion: (HTTPClientResponse)-> Void)] = []
+        func get(from url: URL, completion: @escaping (HTTPClientResponse) -> Void) {
             getFromUrlInvocations.append((url, completion))
         }
 
         // MARK: - Helpers
 
-        func completion(with error: Error, at index: Int = 0) {
-            return getFromUrlInvocations[index].completion(error)
+        func complete(with error: Error, at index: Int = 0) {
+            return getFromUrlInvocations[index].completion(.failure(error))
+        }
+
+        func complete(with response: HTTPURLResponse, at index: Int = 0) {
+            return getFromUrlInvocations[index].completion(.success(response))
         }
 
         func requestedURLs() -> [URL] {
