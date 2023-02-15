@@ -14,13 +14,6 @@ internal struct RemoteFeedMapper {
         let image: URL
 
         var feedItem: FeedItem { FeedItem(id: id, description: description, location: location, imageURL: image) }
-
-        init(id: UUID, description: String?, location: String?, image: URL) {
-            self.id = id
-            self.description = description
-            self.location = location
-            self.image = image
-        }
     }
 
     private static var OK_200: Int { 200 }
