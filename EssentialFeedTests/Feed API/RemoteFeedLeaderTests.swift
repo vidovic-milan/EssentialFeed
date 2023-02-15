@@ -126,7 +126,7 @@ class RemoteFeedLoaderTests: XCTestCase {
         case let (.failure(error as RemoteFeedLoader.Error), .failure(invokedError as RemoteFeedLoader.Error)):
             XCTAssertEqual(error, invokedError, file: file, line: line)
         default:
-            XCTFail("Invoked results are not matching expected")
+            XCTFail("Invoked results are not matching expected", file: file, line: line)
         }
         XCTAssertEqual(invokedResults.count, 1, file: file, line: line)
     }
