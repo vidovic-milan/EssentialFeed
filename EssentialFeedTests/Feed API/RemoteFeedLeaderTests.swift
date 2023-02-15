@@ -110,25 +110,27 @@ class RemoteFeedLoaderTests: XCTestCase {
 
     private func expect(
         _ sut: RemoteFeedLoader,
-        toCompleteWith result: RemoteFeedLoader.Result,
+        toCompleteWith expectedResult: RemoteFeedLoader.Result,
         when action: () -> Void,
         line: UInt = #line,
         file: StaticString = #filePath
     ) {
-        var invokedResults: [RemoteFeedLoader.Result] = []
-        sut.load(completion: { invokedResults.append($0) })
+        let expectation = expectation(description: "exp")
+        sut.load { result in
+            expectation.fulfill()
+            switch (expectedResult, result) {
+            case let (.success(items), .success(invokedItems)):
+                XCTAssertEqual(items, invokedItems, file: file, line: line)
+            case let (.failure(error as RemoteFeedLoader.Error), .failure(invokedError as RemoteFeedLoader.Error)):
+                XCTAssertEqual(error, invokedError, file: file, line: line)
+            default:
+                XCTFail("Invoked results are not matching expected", file: file, line: line)
+            }
+        }
         
         action()
         
-        switch (result, invokedResults.first) {
-        case let (.success(items), .success(invokedItems)):
-            XCTAssertEqual(items, invokedItems, file: file, line: line)
-        case let (.failure(error as RemoteFeedLoader.Error), .failure(invokedError as RemoteFeedLoader.Error)):
-            XCTAssertEqual(error, invokedError, file: file, line: line)
-        default:
-            XCTFail("Invoked results are not matching expected", file: file, line: line)
-        }
-        XCTAssertEqual(invokedResults.count, 1, file: file, line: line)
+        wait(for: [expectation], timeout: 1)
     }
 
     private func failure(_ error: RemoteFeedLoader.Error) -> LoadFeedResult {
