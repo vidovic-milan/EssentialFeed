@@ -119,8 +119,16 @@ class RemoteFeedLoaderTests: XCTestCase {
         sut.load(completion: { invokedResults.append($0) })
         
         action()
-
-        XCTAssertEqual(invokedResults, [result], file: file, line: line)
+        
+        switch (result, invokedResults.first) {
+        case let (.success(items), .success(invokedItems)):
+            XCTAssertEqual(items, invokedItems, file: file, line: line)
+        case let (.failure(error), .failure(invokedError)):
+            XCTAssertEqual(error, invokedError, file: file, line: line)
+        default:
+            XCTFail("Invoked results are not matching expected")
+        }
+        XCTAssertEqual(invokedResults.count, 1, file: file, line: line)
     }
 
     private func makeItem(id: UUID, description: String? = nil, location: String? = nil, imageURL: URL) -> (model: FeedItem, json: [String: Any]) {
