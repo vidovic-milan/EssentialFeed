@@ -30,7 +30,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     func test_load_shouldReturnErrorOnClientError() {
         let (sut, client) = makeSUT()
 
-        expect(sut, toCompleteWith: .failure(.connectivity), when: {
+        expect(sut, toCompleteWith: failure(.connectivity), when: {
             client.complete(with: NSError(domain: "Test", code: 0))
         })
     }
@@ -39,7 +39,7 @@ class RemoteFeedLoaderTests: XCTestCase {
         let (sut, client) = makeSUT()
 
         [199, 201, 300, 400, 500].enumerated().forEach { value in
-            expect(sut, toCompleteWith: .failure(.invalidData), when: {
+            expect(sut, toCompleteWith: failure(.invalidData), when: {
                 client.complete(with: value.element, data: makeItemsData(), at: value.offset)
             })
         }
@@ -48,7 +48,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     func test_load_shouldReturnErrorOn200HTTPResponseWithIncorrectJSON() {
         let (sut, client) = makeSUT()
 
-        expect(sut, toCompleteWith: .failure(.invalidData), when: {
+        expect(sut, toCompleteWith: failure(.invalidData), when: {
             client.complete(with: 200, data: "invalidJson".data(using: .utf8)!)
         })
     }
@@ -123,12 +123,16 @@ class RemoteFeedLoaderTests: XCTestCase {
         switch (result, invokedResults.first) {
         case let (.success(items), .success(invokedItems)):
             XCTAssertEqual(items, invokedItems, file: file, line: line)
-        case let (.failure(error), .failure(invokedError)):
+        case let (.failure(error as RemoteFeedLoader.Error), .failure(invokedError as RemoteFeedLoader.Error)):
             XCTAssertEqual(error, invokedError, file: file, line: line)
         default:
             XCTFail("Invoked results are not matching expected")
         }
         XCTAssertEqual(invokedResults.count, 1, file: file, line: line)
+    }
+
+    private func failure(_ error: RemoteFeedLoader.Error) -> LoadFeedResult {
+        .failure(error)
     }
 
     private func makeItem(id: UUID, description: String? = nil, location: String? = nil, imageURL: URL) -> (model: FeedItem, json: [String: Any]) {

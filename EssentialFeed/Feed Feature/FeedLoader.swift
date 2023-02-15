@@ -1,9 +1,8 @@
-public enum LoadFeedResult<Error: Equatable> {
+public enum LoadFeedResult {
     case success([FeedItem])
     case failure(Error)
 }
 
 public protocol FeedLoader {
-    associatedtype Error: Equatable
-    func loadFeed(completion: @escaping (LoadFeedResult<Error>) -> Void)
+    func loadFeed(completion: @escaping (LoadFeedResult) -> Void)
 }
