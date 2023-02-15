@@ -3,6 +3,8 @@ import Foundation
 internal struct RemoteFeedMapper {
     private struct Root: Decodable {
         let items: [Item]
+
+        var feedItems: [FeedItem] { items.map { $0.feedItem } }
     }
 
     private struct Item: Decodable {
@@ -23,10 +25,10 @@ internal struct RemoteFeedMapper {
 
     private static var OK_200: Int { 200 }
 
-    internal static func map(response: HTTPURLResponse, data: Data) throws -> [FeedItem] {
+    internal static func map(_ response: HTTPURLResponse, data: Data) -> RemoteFeedLoader.Result {
         guard let root = try? JSONDecoder().decode(Root.self, from: data), response.statusCode == OK_200 else {
-            throw RemoteFeedLoader.Error.invalidData
+            return .failure(RemoteFeedLoader.Error.invalidData)
         }
-        return root.items.map { $0.feedItem }
+        return .success(root.feedItems)
     }
 }
