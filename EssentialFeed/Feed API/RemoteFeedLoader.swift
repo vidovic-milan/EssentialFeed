@@ -65,12 +65,3 @@ private struct RemoteFeedMapper {
         return root.items.map { $0.feedItem }
     }
 }
-
-public enum HTTPClientResponse {
-    case success(HTTPURLResponse, Data)
-    case failure(Error)
-}
-
-public protocol HTTPClient {
-    func get(from url: URL, completion: @escaping (HTTPClientResponse) -> Void)
-}
