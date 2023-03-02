@@ -34,6 +34,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         let url = URL(string: "https://a-url.com")!
         session.stub(url: url, error: NSError(domain: "", code: 1))
 
+        let expectation = XCTestExpectation(description: "get(from: URL)")
         sut.get(from: url, completion: { response in
             switch response {
             case .failure(let error as NSError):
@@ -41,8 +42,9 @@ class URLSessionHTTPClientTests: XCTestCase {
             default:
                 XCTFail("Expected failure, but got \(response)")
             }
-            
+            expectation.fulfill()
         })
+        wait(for: [expectation], timeout: 1.0)
     }
 
     private func makeSUT() -> (sut: URLSessionHTTPClient, session: URLSessionSpy) {
