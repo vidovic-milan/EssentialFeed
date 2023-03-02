@@ -55,12 +55,12 @@ class URLSessionHTTPClientTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    private func makeSUT() -> (sut: URLSessionHTTPClient, session: URLSessionSpy) {
-        let session = URLSessionSpy()
+    private func makeSUT() -> (sut: URLSessionHTTPClient, session: HTTPSessionSpy) {
+        let session = HTTPSessionSpy()
         return (URLSessionHTTPClient(session: session), session)
     }
 
-    private class URLSessionSpy: HTTPSession {
+    private class HTTPSessionSpy: HTTPSession {
         private var stubTaskForUrl = [URL: Stub]()
         private var completionHandlers: [(Data?, URLResponse?, Error?) -> Void] = []
 
