@@ -32,14 +32,15 @@ class URLSessionHTTPClientTests: XCTestCase {
     func test_getFromUrl_failsOnError() {
         let sut = makeSUT()
         let url = URL(string: "https://a-url.com")!
-        URLProtocolStub.stub(url: url, error: NSError(domain: "", code: 1))
+        let expectedError = NSError(domain: "", code: 1)
+        URLProtocolStub.stub(url: url, data: nil, response: nil, error: expectedError)
 
         let expectation = XCTestExpectation(description: "get(from: URL)")
         sut.get(from: url, completion: { response in
             switch response {
             case .failure(let error as NSError):
-                XCTAssertEqual(error.domain, NSError(domain: "", code: 1).domain)
-                XCTAssertEqual(error.code, NSError(domain: "", code: 1).code)
+                XCTAssertEqual(error.domain, expectedError.domain)
+                XCTAssertEqual(error.code, expectedError.code)
             default:
                 XCTFail("Expected failure, but got \(response)")
             }
@@ -56,6 +57,8 @@ class URLSessionHTTPClientTests: XCTestCase {
         private static var stubForUrl = [URL: Stub]()
 
         private struct Stub {
+            let data: Data?
+            let response: HTTPURLResponse?
             let error: Error?
         }
 
@@ -87,8 +90,8 @@ class URLSessionHTTPClientTests: XCTestCase {
 
         override func stopLoading() {}
 
-        static func stub(url: URL, error: Error? = nil) {
-            Self.stubForUrl[url] = Stub(error: error)
+        static func stub(url: URL, data: Data?, response: HTTPURLResponse?, error: Error?) {
+            Self.stubForUrl[url] = Stub(data: data, response: response, error: error)
         }
     }
 }
