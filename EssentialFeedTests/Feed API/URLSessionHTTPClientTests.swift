@@ -8,10 +8,10 @@ class URLSessionHTTPClient {
         self.session = session
     }
 
-    func get(from url: URL, completion: @escaping (Error) -> Void) {
+    func get(from url: URL, completion: @escaping (HTTPClientResponse) -> Void) {
         session.dataTask(with: url) { _, _, error in
             if let error {
-                completion(error)
+                completion(.failure(error))
             }
         }.resume()
     }
@@ -32,12 +32,17 @@ class URLSessionHTTPClientTests: XCTestCase {
     func test_getFromUrl_failsOnError() {
         let (sut, session) = makeSUT()
         let url = URL(string: "https://a-url.com")!
-        var invokedError: Error?
         session.stub(url: url, error: NSError(domain: "", code: 1))
 
-        sut.get(from: url, completion: { invokedError = $0 })
-
-        XCTAssertEqual(invokedError as? NSError, NSError(domain: "", code: 1))
+        sut.get(from: url, completion: { response in
+            switch response {
+            case .failure(let error as NSError):
+                XCTAssertEqual(error, NSError(domain: "", code: 1))
+            default:
+                XCTFail("Expected failure, but got \(response)")
+            }
+            
+        })
     }
 
     private func makeSUT() -> (sut: URLSessionHTTPClient, session: URLSessionSpy) {
