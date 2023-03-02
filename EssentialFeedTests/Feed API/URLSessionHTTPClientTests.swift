@@ -65,6 +65,7 @@ class URLSessionHTTPClientTests: XCTestCase {
 
         static func unregister() {
             URLProtocol.unregisterClass(URLProtocolStub.self)
+            stubForUrl = [:]
         }
 
         override class func canInit(with request: URLRequest) -> Bool {
