@@ -15,19 +15,22 @@ class URLSessionHTTPClient {
 
 class URLSessionHTTPClientTests: XCTestCase {
     func test_init_shouldNotCreateRequest() {
-        let client = URLSessionSpy()
-        let _ = URLSessionHTTPClient(client: client)
+        let (_, client) = makeSUT()
 
         XCTAssertTrue(client.requestedURLs.isEmpty)
     }
 
     func test_getFromUrl_shouldRequestFromClient() {
-        let client = URLSessionSpy()
-        let sut = URLSessionHTTPClient(client: client)
+        let (sut, client) = makeSUT()
 
         sut.get(from: URL(string: "https://a-url.com")!)
 
         XCTAssertEqual(client.requestedURLs, [URL(string: "https://a-url.com")!])
+    }
+
+    private func makeSUT() -> (sut: URLSessionHTTPClient, client: URLSessionSpy) {
+        let client = URLSessionSpy()
+        return (URLSessionHTTPClient(client: client), client)
     }
 
     private class URLSessionSpy: URLSession {
