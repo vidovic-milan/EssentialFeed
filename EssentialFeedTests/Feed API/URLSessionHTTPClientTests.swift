@@ -56,10 +56,11 @@ class URLSessionHTTPClientTests: XCTestCase {
         override init() {}
 
         override func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-            if let error = stubTaskForUrl[url]?.error {
-                completionHandler(nil, nil, error)
+            guard let stub = stubTaskForUrl[url] else {
+                fatalError("Stub is not set")
             }
-            return stubTaskForUrl[url]?.task ?? FakeDataTask()
+            completionHandler(nil, nil, stub.error)
+            return stub.task
         }
 
         func stub(url: URL, with task: URLSessionDataTask = FakeDataTask(), error: Error? = nil) {
