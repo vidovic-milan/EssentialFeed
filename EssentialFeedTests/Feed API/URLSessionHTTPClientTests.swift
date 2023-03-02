@@ -20,7 +20,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         XCTAssertTrue(client.requestedURLs.isEmpty)
     }
 
-    func test_getFromUrl_shouldRequestFromClient() {
+    func test_getFromUrl_createsDataTaskWithUrl() {
         let (sut, client) = makeSUT()
 
         sut.get(from: URL(string: "https://a-url.com")!)
