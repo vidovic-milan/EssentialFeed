@@ -33,9 +33,9 @@ class URLSessionHTTPClientTests: XCTestCase {
         let (sut, session) = makeSUT()
         let url = URL(string: "https://a-url.com")!
         var invokedError: Error?
+        session.stub(url: url, error: NSError(domain: "", code: 1))
 
         sut.get(from: url, completion: { invokedError = $0 })
-        session.complete(with: NSError(domain: "", code: 1))
 
         XCTAssertEqual(invokedError as? NSError, NSError(domain: "", code: 1))
     }
@@ -46,21 +46,24 @@ class URLSessionHTTPClientTests: XCTestCase {
     }
 
     private class URLSessionSpy: URLSession {
-        private var stubTaskForUrl = [URL: DataTaskSpy]()
+        private var stubTaskForUrl = [URL: Stub]()
         private var completionHandlers: [(Data?, URLResponse?, Error?) -> Void] = []
+
+        private struct Stub {
+            let task: URLSessionDataTask
+            let error: Error?
+        }
         override init() {}
 
         override func dataTask(with url: URL, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask {
-            completionHandlers.append(completionHandler)
-            return stubTaskForUrl[url] ?? FakeDataTask()
+            if let error = stubTaskForUrl[url]?.error {
+                completionHandler(nil, nil, error)
+            }
+            return stubTaskForUrl[url]?.task ?? FakeDataTask()
         }
 
-        func complete(with error: Error, at index: Int = 0) {
-            completionHandlers[0](nil, nil, error)
-        }
-
-        func stub(url: URL, with task: DataTaskSpy) {
-            stubTaskForUrl[url] = task
+        func stub(url: URL, with task: URLSessionDataTask = FakeDataTask(), error: Error? = nil) {
+            stubTaskForUrl[url] = Stub(task: task, error: error)
         }
     }
 
