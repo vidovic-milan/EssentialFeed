@@ -2,14 +2,14 @@ import EssentialFeed
 import XCTest
 
 class URLSessionHTTPClient {
-    private let client: URLSession
+    private let session: URLSession
 
-    init(client: URLSession) {
-        self.client = client
+    init(session: URLSession) {
+        self.session = session
     }
 
     func get(from url: URL) {
-        client.dataTask(with: url) { _, _, _ in }.resume()
+        session.dataTask(with: url) { _, _, _ in }.resume()
     }
 }
 
@@ -17,17 +17,17 @@ class URLSessionHTTPClientTests: XCTestCase {
 
     func test_getFromUrl_shouldResumeDataTask() {
         let task = DataTaskSpy()
-        let (sut, client) = makeSUT()
-        client.stub(url: URL(string: "https://a-url.com")!, with: task)
+        let (sut, session) = makeSUT()
+        session.stub(url: URL(string: "https://a-url.com")!, with: task)
 
         sut.get(from: URL(string: "https://a-url.com")!)
 
         XCTAssertEqual(task.resumeInvocationsCount, 1)
     }
 
-    private func makeSUT() -> (sut: URLSessionHTTPClient, client: URLSessionSpy) {
-        let client = URLSessionSpy()
-        return (URLSessionHTTPClient(client: client), client)
+    private func makeSUT() -> (sut: URLSessionHTTPClient, session: URLSessionSpy) {
+        let session = URLSessionSpy()
+        return (URLSessionHTTPClient(session: session), session)
     }
 
     private class URLSessionSpy: URLSession {
