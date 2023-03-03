@@ -4,6 +4,8 @@ import XCTest
 class URLSessionHTTPClient {
     private let session: URLSession
 
+    private struct UnexpectedResponseError: Error {}
+
     init(session: URLSession = .shared) {
         self.session = session
     }
@@ -12,6 +14,8 @@ class URLSessionHTTPClient {
         session.dataTask(with: url) { _, _, error in
             if let error {
                 completion(.failure(error))
+            } else {
+                completion(.failure(UnexpectedResponseError()))
             }
         }.resume()
     }
@@ -40,6 +44,24 @@ class URLSessionHTTPClientTests: XCTestCase {
             case .failure(let error as NSError):
                 XCTAssertEqual(error.domain, expectedError.domain)
                 XCTAssertEqual(error.code, expectedError.code)
+            default:
+                XCTFail("Expected failure, but got \(response)")
+            }
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: 1.0)
+    }
+
+    func test_getFromUrl_failsOnInvalidCase() {
+        URLProtocolSpy.stub(data: nil, response: nil, error: nil)
+
+        let expectation = XCTestExpectation(description: "Wait for response")
+
+        makeSUT().get(from: anyURL()) { response in
+            switch response {
+            case .failure:
+                break
             default:
                 XCTFail("Expected failure, but got \(response)")
             }
