@@ -35,7 +35,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         let expectedError = NSError(domain: "", code: 1)
         URLProtocolSpy.stub(data: nil, response: nil, error: expectedError)
 
-        let expectation = XCTestExpectation(description: "get(from: URL)")
+        let expectation = XCTestExpectation(description: "Wait for response")
         sut.get(from: url, completion: { response in
             switch response {
             case .failure(let error as NSError):
@@ -52,11 +52,16 @@ class URLSessionHTTPClientTests: XCTestCase {
     func test_getFromUrl_performsRequestWithCorrectUrl() {
         let sut = makeSUT()
         let url = URL(string: "https://a-url.com")!
+
+        let expectation = XCTestExpectation(description: "Wait for response")
         URLProtocolSpy.observeRequests { request in
             XCTAssertEqual(request.url, url)
+            expectation.fulfill()
         }
 
         sut.get(from: url, completion: { _ in })
+
+        wait(for: [expectation], timeout: 1.0)
     }
 
     private func makeSUT() -> URLSessionHTTPClient {
