@@ -17,6 +17,7 @@
 		BE822C5929941CE70026926D /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE822C5829941CE70026926D /* FeedItem.swift */; };
 		BE822C5B29941D2A0026926D /* FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE822C5A29941D2A0026926D /* FeedLoader.swift */; };
 		BEEC81A229B2674C00115CF1 /* XCTestCase+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEC81A129B2674C00115CF1 /* XCTestCase+Extensions.swift */; };
+		BEEC81A429B276CD00115CF1 /* URLSessionHTTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEC81A329B276CD00115CF1 /* URLSessionHTTPClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +42,7 @@
 		BE822C5829941CE70026926D /* FeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
 		BE822C5A29941D2A0026926D /* FeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoader.swift; sourceTree = "<group>"; };
 		BEEC81A129B2674C00115CF1 /* XCTestCase+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+Extensions.swift"; sourceTree = "<group>"; };
+		BEEC81A329B276CD00115CF1 /* URLSessionHTTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionHTTPClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 				BE7D70B1299967CC0065502A /* RemoteFeedLoader.swift */,
 				BE19353F299CF43200A7C0DD /* RemoteFeedMapper.swift */,
 				BE19353D299CF40C00A7C0DD /* HTTPClient.swift */,
+				BEEC81A329B276CD00115CF1 /* URLSessionHTTPClient.swift */,
 			);
 			path = "Feed API";
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				BE7D70B2299967CC0065502A /* RemoteFeedLoader.swift in Sources */,
 				BE19353E299CF40C00A7C0DD /* HTTPClient.swift in Sources */,
 				BE822C5929941CE70026926D /* FeedItem.swift in Sources */,
+				BEEC81A429B276CD00115CF1 /* URLSessionHTTPClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
