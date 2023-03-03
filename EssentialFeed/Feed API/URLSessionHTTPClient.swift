@@ -1,6 +1,6 @@
 import Foundation
 
-public class URLSessionHTTPClient {
+public class URLSessionHTTPClient: HTTPClient {
     private let session: URLSession
 
     private struct UnexpectedResponseError: Error {}
