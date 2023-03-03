@@ -16,6 +16,7 @@
 		BE822C4F29941C320026926D /* EssentialFeed.h in Headers */ = {isa = PBXBuildFile; fileRef = BE822C4329941C320026926D /* EssentialFeed.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BE822C5929941CE70026926D /* FeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE822C5829941CE70026926D /* FeedItem.swift */; };
 		BE822C5B29941D2A0026926D /* FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE822C5A29941D2A0026926D /* FeedLoader.swift */; };
+		BEEC81A229B2674C00115CF1 /* XCTestCase+TrackMemoryLeak.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEEC81A129B2674C00115CF1 /* XCTestCase+TrackMemoryLeak.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +40,7 @@
 		BE822C4829941C320026926D /* EssentialFeedTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EssentialFeedTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE822C5829941CE70026926D /* FeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedItem.swift; sourceTree = "<group>"; };
 		BE822C5A29941D2A0026926D /* FeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoader.swift; sourceTree = "<group>"; };
+		BEEC81A129B2674C00115CF1 /* XCTestCase+TrackMemoryLeak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+TrackMemoryLeak.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 		BE822C4C29941C320026926D /* EssentialFeedTests */ = {
 			isa = PBXGroup;
 			children = (
+				BEEC81A029B2672A00115CF1 /* Helpers */,
 				BE193541299CF81400A7C0DD /* Feed API */,
 			);
 			path = EssentialFeedTests;
@@ -122,6 +125,14 @@
 				BE822C5A29941D2A0026926D /* FeedLoader.swift */,
 			);
 			path = "Feed Feature";
+			sourceTree = "<group>";
+		};
+		BEEC81A029B2672A00115CF1 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BEEC81A129B2674C00115CF1 /* XCTestCase+TrackMemoryLeak.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -248,6 +259,7 @@
 			files = (
 				BE7D70AF299961120065502A /* RemoteFeedLeaderTests.swift in Sources */,
 				BE1E105F29B0E6A7006580C0 /* URLSessionHTTPClientTests.swift in Sources */,
+				BEEC81A229B2674C00115CF1 /* XCTestCase+TrackMemoryLeak.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
