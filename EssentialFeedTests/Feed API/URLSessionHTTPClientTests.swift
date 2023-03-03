@@ -52,9 +52,11 @@ class URLSessionHTTPClientTests: XCTestCase {
     func test_getFromUrl_performsRequestWithCorrectUrl() {
         let sut = makeSUT()
         let url = URL(string: "https://a-url.com")!
+        URLProtocolSpy.observeRequests { request in
+            XCTAssertEqual(request.url, url)
+        }
 
         sut.get(from: url, completion: { _ in })
-        XCTAssertEqual(URLProtocolSpy.performedRequests.map { $0.url }, [url])
     }
 
     private func makeSUT() -> URLSessionHTTPClient {
@@ -63,7 +65,7 @@ class URLSessionHTTPClientTests: XCTestCase {
 
     private class URLProtocolSpy: URLProtocol {
         private static var stub: Stub?
-        static var performedRequests: [URLRequest] = []
+        private static var requestObserver: ((URLRequest) -> Void)?
 
         private struct Stub {
             let data: Data?
@@ -80,8 +82,12 @@ class URLSessionHTTPClientTests: XCTestCase {
             stub = nil
         }
 
+        static func observeRequests(_ observer: @escaping (URLRequest) -> Void) {
+            requestObserver = observer
+        }
+
         override class func canInit(with request: URLRequest) -> Bool {
-            performedRequests.append(request)
+            requestObserver?(request)
             return true
         }
 
