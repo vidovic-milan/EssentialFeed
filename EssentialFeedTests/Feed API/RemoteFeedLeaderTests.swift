@@ -9,7 +9,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     }
 
     func test_load_shouldRequestFromURL() {
-        let url = URL(string: "https://a-test-url.com")!
+        let url = anyURL()
         let (sut, client) = makeSUT(url: url)
 
         sut.load(completion: {_ in})
@@ -18,7 +18,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     }
 
     func test_loadTwice_shouldRequestFromURLTwice() {
-        let url = URL(string: "https://a-test-url.com")!
+        let url = anyURL()
         let (sut, client) = makeSUT(url: url)
 
         sut.load(completion: {_ in})
@@ -64,7 +64,7 @@ class RemoteFeedLoaderTests: XCTestCase {
     func test_load_shouldReturnCorrectItemsOn200HttpResponseWithItemsJSON() {
         let (sut, client) = makeSUT()
         
-        let item1 = makeItem(id: UUID(), imageURL: URL(string: "https://a-url.com")!)
+        let item1 = makeItem(id: UUID(), imageURL: anyURL())
         let item2 = makeItem(id: UUID(), description: "description", location: "location", imageURL: URL(string: "https://another-url.com")!)
 
         let items = [item1.model, item2.model]
@@ -77,8 +77,7 @@ class RemoteFeedLoaderTests: XCTestCase {
 
     func test_load_shouldNotInvokeCompletionWhenInstanceIsDeallocated() {
         let client = HTTPClientSpy()
-        let url = URL(string: "https://a-url.com")!
-        var sut: RemoteFeedLoader? = RemoteFeedLoader(client: client, url: url)
+        var sut: RemoteFeedLoader? = RemoteFeedLoader(client: client, url: anyURL())
 
         var invokedResult: RemoteFeedLoader.Result?
         sut?.load(completion: { invokedResult = $0 })
