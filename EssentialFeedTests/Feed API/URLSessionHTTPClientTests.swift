@@ -49,13 +49,14 @@ class URLSessionHTTPClientTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    func test_getFromUrl_performsRequestWithCorrectUrl() {
+    func test_getFromUrl_performsGETRequestWithCorrectUrl() {
         let sut = makeSUT()
         let url = URL(string: "https://a-url.com")!
 
         let expectation = XCTestExpectation(description: "Wait for response")
         URLProtocolSpy.observeRequests { request in
             XCTAssertEqual(request.url, url)
+            XCTAssertEqual(request.httpMethod, "GET")
             expectation.fulfill()
         }
 
