@@ -112,46 +112,56 @@ class URLSessionHTTPClientTests: XCTestCase {
     }
 
     private func resultError(data: Data?, response: URLResponse?, error: Error?, line: UInt = #line, file: StaticString = #filePath) -> Error? {
-        URLProtocolSpy.stub(data: data, response: response, error: error)
-        let expectation = XCTestExpectation(description: "Wait for response")
-        let sut = makeSUT(line: line, file: file)
-
         var invokedError: Error?
 
-        sut.get(from: anyURL()) { response in
-            switch response {
-            case .failure(let error):
-                invokedError = error
-            default:
-                XCTFail("Expected failure, but got \(response)", file: file, line: line)
-            }
-            expectation.fulfill()
+        guard let result = resultFor(data: data, response: response, error: error) else {
+            XCTFail("Expected failure, but got nil", file: file, line: line)
+            return nil
         }
 
-        wait(for: [expectation], timeout: 1.0)
+        switch result {
+        case .failure(let error):
+            invokedError = error
+        default:
+            XCTFail("Expected failure, but got \(result)", file: file, line: line)
+        }
+
         return invokedError
     }
 
     
     private func resultSuccess(data: Data?, response: URLResponse?, error: Error?, line: UInt = #line, file: StaticString = #filePath) -> (data: Data, response: HTTPURLResponse)? {
-        URLProtocolSpy.stub(data: data, response: response, error: error)
-        let expectation = XCTestExpectation(description: "Wait for response")
-        let sut = makeSUT(line: line, file: file)
-
         var invokedResult: (data: Data, response: HTTPURLResponse)?
 
+        guard let result = resultFor(data: data, response: response, error: error) else {
+            XCTFail("Expected success, but got nil", file: file, line: line)
+            return nil
+        }
+
+        switch result {
+        case let .success(response, data):
+            invokedResult = (data, response)
+        default:
+            XCTFail("Expected success, but got \(result)", file: file, line: line)
+        }
+
+        return invokedResult
+    }
+
+    private func resultFor(data: Data?, response: URLResponse?, error: Error?, line: UInt = #line, file: StaticString = #filePath) -> HTTPClientResponse? {
+        URLProtocolSpy.stub(data: data, response: response, error: error)
+        let expectation = XCTestExpectation(description: "Wait for response")
+        var invokedResponse: HTTPClientResponse?
+
+        let sut = makeSUT(line: line, file: file)
+
         sut.get(from: anyURL()) { response in
-            switch response {
-            case let .success(response, data):
-                invokedResult = (data, response)
-            default:
-                XCTFail("Expected success, but got \(response)", file: file, line: line)
-            }
+            invokedResponse = response
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: 1.0)
-        return invokedResult
+        return invokedResponse
     }
 
     private class URLProtocolSpy: URLProtocol {
