@@ -30,13 +30,12 @@ class URLSessionHTTPClientTests: XCTestCase {
     }
 
     func test_getFromUrl_failsOnError() {
-        let url = anyURL()
         let expectedError = anyNSError()
         URLProtocolSpy.stub(data: nil, response: nil, error: expectedError)
 
         let expectation = XCTestExpectation(description: "Wait for response")
 
-        makeSUT().get(from: url) { response in
+        makeSUT().get(from: anyURL()) { response in
             switch response {
             case .failure(let error as NSError):
                 XCTAssertEqual(error.domain, expectedError.domain)
