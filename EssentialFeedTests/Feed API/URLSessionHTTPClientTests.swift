@@ -41,8 +41,20 @@ class URLSessionHTTPClientTests: XCTestCase {
         XCTAssertEqual(receivedError?.code, expectedError.code)
     }
 
-    func test_getFromUrl_failsOnAllNilValues() {
+    func test_getFromUrl_failsOnAllInvalidCases() {
+        let anyURLResponse = URLResponse(url: anyURL(), mimeType: nil, expectedContentLength: 1, textEncodingName: nil)
+        let anyHTTPURLResponse = HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)
+        let anyData = Data("any".utf8)
         XCTAssertNotNil(resultError(data: nil, response: nil, error: nil))
+        XCTAssertNotNil(resultError(data: nil, response: anyURLResponse, error: nil))
+        XCTAssertNotNil(resultError(data: nil, response: anyHTTPURLResponse, error: nil))
+        XCTAssertNotNil(resultError(data: anyData, response: nil, error: nil))
+        XCTAssertNotNil(resultError(data: anyData, response: nil, error: anyNSError()))
+        XCTAssertNotNil(resultError(data: nil, response: anyURLResponse, error: anyNSError()))
+        XCTAssertNotNil(resultError(data: nil, response: anyHTTPURLResponse, error: anyNSError()))
+        XCTAssertNotNil(resultError(data: anyData, response: anyURLResponse, error: anyNSError()))
+        XCTAssertNotNil(resultError(data: anyData, response: anyHTTPURLResponse, error: anyNSError()))
+        XCTAssertNotNil(resultError(data: anyData, response: anyURLResponse, error: nil))
     }
 
     func test_getFromUrl_performsGETRequestWithCorrectUrl() {
