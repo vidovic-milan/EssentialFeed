@@ -80,6 +80,7 @@ class URLSessionHTTPClientTests: XCTestCase {
         static func unregister() {
             URLProtocol.unregisterClass(URLProtocolSpy.self)
             stub = nil
+            requestObserver = nil
         }
 
         static func observeRequests(_ observer: @escaping (URLRequest) -> Void) {
