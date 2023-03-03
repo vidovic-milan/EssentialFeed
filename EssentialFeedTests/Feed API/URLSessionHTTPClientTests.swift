@@ -70,11 +70,12 @@ class URLSessionHTTPClientTests: XCTestCase {
 
     private func resultError(data: Data?, response: URLResponse?, error: Error?, line: UInt = #line, file: StaticString = #filePath) -> Error? {
         URLProtocolSpy.stub(data: data, response: response, error: error)
-
         let expectation = XCTestExpectation(description: "Wait for response")
+        let sut = makeSUT(line: line, file: file)
+
         var invokedError: Error?
 
-        makeSUT().get(from: anyURL()) { response in
+        sut.get(from: anyURL()) { response in
             switch response {
             case .failure(let error):
                 invokedError = error
