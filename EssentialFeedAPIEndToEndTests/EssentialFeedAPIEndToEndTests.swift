@@ -27,7 +27,8 @@ final class EssentialFeedAPIEndToEndTests: XCTestCase {
         let testServerURL = URL(string: "https://essentialdeveloper.com/feed-case-study/test-api/feed")!
         let client = URLSessionHTTPClient()
         let loader = RemoteFeedLoader(client: client, url: testServerURL)
-
+        trackMemoryLeak(client)
+        trackMemoryLeak(loader)
         let exp = expectation(description: "wait for remote load")
         var receivedResult: LoadFeedResult?
         loader.load { result in
@@ -36,6 +37,12 @@ final class EssentialFeedAPIEndToEndTests: XCTestCase {
         }
         wait(for: [exp], timeout: 13.0)
         return receivedResult
+    }
+
+    private func trackMemoryLeak(_ instance: AnyObject, line: UInt = #line, file: StaticString = #filePath) {
+        addTeardownBlock { [weak instance] in
+            XCTAssertNil(instance, "Instance should be deallocated. Potential memory leak", file: file, line: line)
+        }
     }
 
     private func expectedItem(at index: Int) -> FeedItem {
