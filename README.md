@@ -1,4 +1,4 @@
 # EssentialFeed
 Essential Feed Case Study
 
-[github tests](https://github.com/vidovic-milan/docs/actions/workflows/github.yml/badge.svg)
+[![CI-Test](https://github.com/vidovic-milan/EssentialFeed/actions/workflows/github.yml/badge.svg?branch=master)](https://github.com/vidovic-milan/EssentialFeed/actions/workflows/github.yml)
