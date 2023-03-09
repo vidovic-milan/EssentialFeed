@@ -8,7 +8,7 @@ jobs:
     runs-on: macos-latest
     strategy:
         matrix:
-          destination: os: [macOS-latest]
+          destination: [macOS-latest]
     steps:
       - name: Checkout
         uses: actions/checkout@master
