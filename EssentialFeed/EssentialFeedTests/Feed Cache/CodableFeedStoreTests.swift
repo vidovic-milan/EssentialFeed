@@ -1,7 +1,9 @@
 import XCTest
 import EssentialFeed
 
-class CodableFeedStoreTests: XCTestCase {
+typealias FailableFeedStore = FailableRetrieveFeedStoreSpecs & FailableInsertFeedStoreSpecs & FailableDeleteFeedStoreSpecs
+
+class CodableFeedStoreTests: XCTestCase, FailableFeedStore {
 	
 	override func setUp() {
 		super.setUp()
