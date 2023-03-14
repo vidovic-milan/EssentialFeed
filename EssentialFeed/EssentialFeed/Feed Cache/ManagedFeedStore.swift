@@ -2,15 +2,22 @@ import CoreData
 
 public class ManagedFeedStore: FeedStore {
 
+    public enum ManagedFeedStoreError: Error {
+        case invalidModelName
+    }
+
     private let storeURL: URL
     private let context: NSManagedObjectContext
+    private static let modelName: String = "FeedStore"
 
-    public init(storeURL: URL) {
+    public init(storeURL: URL) throws {
+        guard let model = NSManagedObjectModel(name: ManagedFeedStore.modelName, bundle: Bundle(for: ManagedFeedStore.self)) else {
+            throw ManagedFeedStoreError.invalidModelName
+        }
+
         self.storeURL = storeURL
 
-        let modelName = "FeedStore"
-        let model = NSManagedObjectModel(contentsOf: Bundle(for: Self.self).url(forResource: modelName, withExtension: "momd")!)!
-        let container = NSPersistentContainer(name: modelName, managedObjectModel: model)
+        let container = NSPersistentContainer(name: ManagedFeedStore.modelName, managedObjectModel: model)
         
         container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: storeURL)]
         container.loadPersistentStores(completionHandler: { _, _ in })

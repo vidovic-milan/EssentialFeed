@@ -130,7 +130,9 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     // - MARK: Helpers
     
     private func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> FeedStore {
-        let sut = ManagedFeedStore(storeURL: storeURL ?? testSpecificStoreURL())
+        guard let sut = try? ManagedFeedStore(storeURL: storeURL ?? testSpecificStoreURL()) else {
+            fatalError("ManagedFeedStore creation failed")
+        }
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
     }
