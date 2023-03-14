@@ -37,17 +37,21 @@ public class ManagedFeedStore: FeedStore {
 
 
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        if let result = try? ManagedCache.find(in: self.context), let cache = result {
-            context.delete(cache)
-        }
-
         context.perform {
-            let cache = ManagedCache(context: self.context)
-            cache.feed = NSOrderedSet(array: feed.map { ManagedFeedImage.image(from: $0, in: self.context) })
-            cache.timestamp = timestamp
+            do {
+                if let cache = try ManagedCache.find(in: self.context) {
+                    self.context.delete(cache)
+                }
 
-            try! self.context.save()
-            completion(nil)
+                let cache = ManagedCache(context: self.context)
+                cache.feed = NSOrderedSet(array: feed.map { ManagedFeedImage.image(from: $0, in: self.context) })
+                cache.timestamp = timestamp
+
+                try self.context.save()
+                completion(nil)
+            } catch {
+                completion(error)
+            }
         }
     }
 

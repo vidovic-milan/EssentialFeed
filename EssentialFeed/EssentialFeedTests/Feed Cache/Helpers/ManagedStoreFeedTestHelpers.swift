@@ -7,6 +7,13 @@ extension NSManagedObjectContext {
             destination: #selector(Stub.execute)
         )
     }
+
+    static func alwaysFailingSave() -> Stub {
+        Stub(
+            source: #selector(NSManagedObjectContext.save),
+            destination: #selector(Stub.save)
+        )
+    }
 }
 
 class Stub {
