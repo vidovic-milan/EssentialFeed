@@ -61,6 +61,7 @@ public class ManagedFeedStore: FeedStore {
                 try ManagedCache.find(in: self.context).map(self.context.delete).map(self.context.save)
                 completion(nil)
             } catch {
+                self.context.rollback()
                 completion(error)
             }
         }

@@ -78,7 +78,7 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
         assertInsertionDeliversErrorOnInsertionError(on: sut)
     }
 
-    func test_insert_deliversEmptyFeedOnInsertionError() {
+    func test_insert_hasNoSideEffectsOnInsertionError() {
         let stub = NSManagedObjectContext.alwaysFailingSave()
         stub.startIntercepting()
 
@@ -110,15 +110,6 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
 
         assertDeletionEmptiesPreviouslyInsertedCache(on: sut)
     }
-
-    func test_delete_retrievesEmptyFeedOnDeletionError() {
-        let stub = NSManagedObjectContext.alwaysFailingSave()
-        stub.startIntercepting()
-
-        let sut = makeSUT()
-
-        assertDeletionRetrievesEmptyFeedOnDeletionError(on: sut)
-    }
     
     func test_delete_deliversErrorOnDeletionError() {
         let stub = NSManagedObjectContext.alwaysFailingSave()
@@ -133,6 +124,21 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
         let deletionError = deleteCache(from: sut)
 
         XCTAssertNotNil(deletionError, "Expected cache deletion to fail")
+    }
+
+    func test_delete_hasNoSideEffectsOnDeletionError() {
+        let stub = NSManagedObjectContext.alwaysFailingSave()
+        let feed = uniqueImageFeed().local
+        let timestamp = Date()
+        let sut = makeSUT()
+
+        insert((feed, timestamp), to: sut)
+
+        stub.startIntercepting()
+
+        deleteCache(from: sut)
+
+        expect(sut, toRetrieve: .found(feed: feed, timestamp: timestamp))
     }
 
     func test_sideEffectsOperations_runSerially() {

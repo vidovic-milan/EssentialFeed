@@ -24,10 +24,10 @@ protocol FailableRetrieveFeedStoreSpecs: FeedStoreSpecs {
 
 protocol FailableInsertFeedStoreSpecs: FeedStoreSpecs {
     func test_insert_deliversErrorOnInsertionError()
-    func test_insert_deliversEmptyFeedOnInsertionError()
+    func test_insert_hasNoSideEffectsOnInsertionError()
 }
 
 protocol FailableDeleteFeedStoreSpecs: FeedStoreSpecs {
-    func test_delete_retrievesEmptyFeedOnDeletionError()
     func test_delete_deliversErrorOnDeletionError()
+    func test_delete_hasNoSideEffectsOnDeletionError()
 }

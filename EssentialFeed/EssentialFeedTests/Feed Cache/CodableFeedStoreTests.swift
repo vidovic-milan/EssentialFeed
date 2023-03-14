@@ -78,7 +78,7 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStore {
         assertInsertionDeliversErrorOnInsertionError(on: sut)
 	}
 
-    func test_insert_deliversEmptyFeedOnInsertionError() {
+    func test_insert_hasNoSideEffectsOnInsertionError() {
         let invalidStoreURL = URL(string: "invalid://store-url")!
         let sut = makeSUT(storeURL: invalidStoreURL)
 
@@ -109,7 +109,7 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStore {
         assertDeletionEmptiesPreviouslyInsertedCache(on: sut)
 	}
 
-    func test_delete_retrievesEmptyFeedOnDeletionError() {
+    func test_delete_hasNoSideEffectsOnDeletionError() {
         let noDeletePermissionURL = cachesDirectory()
         let sut = makeSUT(storeURL: noDeletePermissionURL)
         
