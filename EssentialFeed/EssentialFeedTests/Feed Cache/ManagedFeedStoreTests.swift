@@ -34,9 +34,9 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
     
     func test_retrieve_hasNoSideEffectsOnNonEmptyCache() {
-//        let sut = makeSUT()
-//
-//        assertRetrievalHasNoSideEffectsOnNonEmptyCache(on: sut)
+        let sut = makeSUT()
+
+        assertRetrievalHasNoSideEffectsOnNonEmptyCache(on: sut)
     }
     
     func test_retrieve_deliversFailureOnRetrievalError() {
