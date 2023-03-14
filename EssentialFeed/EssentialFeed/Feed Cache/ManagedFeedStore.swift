@@ -24,8 +24,7 @@ public class ManagedFeedStore: FeedStore {
     public func retrieve(completion: @escaping RetrievalCompletion) {
         context.perform {
             do {
-                let fetchedCache = try self.context.fetch(NSFetchRequest<ManagedCache>(entityName: ManagedCache.entity().name!))
-                if let cache = fetchedCache.first {
+                if let cache = try ManagedCache.find(in: self.context) {
                     let cacheFeed = cache.feed.array as! [ManagedFeedImage]
                     let localFeed = cacheFeed.map { LocalFeedImage(id: $0.id, description: $0.imageDescription, location: $0.location, url: $0.url) }
                     completion(.found(feed: localFeed, timestamp: cache.timestamp))
@@ -40,8 +39,7 @@ public class ManagedFeedStore: FeedStore {
 
 
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        let fetchedCache = try? self.context.fetch(NSFetchRequest<ManagedCache>(entityName: ManagedCache.entity().name!))
-        if let cache = fetchedCache?.first {
+        if let result = try? ManagedCache.find(in: self.context), let cache = result {
             context.delete(cache)
         }
 
