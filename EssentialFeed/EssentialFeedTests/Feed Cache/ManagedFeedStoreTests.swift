@@ -40,12 +40,12 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
     
     func test_retrieve_deliversFailureOnRetrievalError() {
-//        let storeURL = testSpecificStoreURL()
-//        let sut = makeSUT(storeURL: storeURL)
-//
-//        try! "invalid data".write(to: storeURL, atomically: false, encoding: .utf8)
-//
-//        assertRetrievalDeliversFailureOnRetrievalError(on: sut)
+        let stub = NSManagedObjectContext.alwaysFailingFetch()
+        stub.startIntercepting()
+
+        let sut = makeSUT()
+
+        assertRetrievalDeliversFailureOnRetrievalError(on: sut)
     }
     
     func test_retrieve_hasNoSideEffectsOnFailure() {

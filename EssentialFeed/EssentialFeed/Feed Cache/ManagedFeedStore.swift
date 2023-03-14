@@ -23,13 +23,17 @@ public class ManagedFeedStore: FeedStore {
 
     public func retrieve(completion: @escaping RetrievalCompletion) {
         context.perform {
-            let fetchedCache = try? self.context.fetch(NSFetchRequest<ManagedCache>(entityName: ManagedCache.entity().name!))
-            if let cache = fetchedCache?.first {
-                let cacheFeed = cache.feed.array as! [ManagedFeedImage]
-                let localFeed = cacheFeed.map { LocalFeedImage(id: $0.id, description: $0.imageDescription, location: $0.location, url: $0.url) }
-                completion(.found(feed: localFeed, timestamp: cache.timestamp))
-            } else {
-                completion(.empty)
+            do {
+                let fetchedCache = try self.context.fetch(NSFetchRequest<ManagedCache>(entityName: ManagedCache.entity().name!))
+                if let cache = fetchedCache.first {
+                    let cacheFeed = cache.feed.array as! [ManagedFeedImage]
+                    let localFeed = cacheFeed.map { LocalFeedImage(id: $0.id, description: $0.imageDescription, location: $0.location, url: $0.url) }
+                    completion(.found(feed: localFeed, timestamp: cache.timestamp))
+                } else {
+                    completion(.empty)
+                }
+            } catch {
+                completion(.failure(error))
             }
         }
     }
