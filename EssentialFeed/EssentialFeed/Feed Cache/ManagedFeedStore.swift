@@ -40,6 +40,11 @@ public class ManagedFeedStore: FeedStore {
 
 
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
+        let fetchedCache = try? self.context.fetch(NSFetchRequest<ManagedCache>(entityName: ManagedCache.entity().name!))
+        if let cache = fetchedCache?.first {
+            context.delete(cache)
+        }
+
         context.perform {
             let managedImages = feed.map { local in
                 let managedImage = ManagedFeedImage(context: self.context)

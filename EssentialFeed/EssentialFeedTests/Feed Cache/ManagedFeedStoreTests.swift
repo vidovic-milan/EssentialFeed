@@ -58,9 +58,9 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
     
     func test_insert_overridesPreviouslyInsertedCacheValues() {
-//        let sut = makeSUT()
-//
-//        assertInsertionOverridesPreviouslyInsertedCacheValues(on: sut)
+        let sut = makeSUT()
+
+        assertInsertionOverridesPreviouslyInsertedCacheValues(on: sut)
     }
 
     func test_insert_doesNotFailOnInsertingNewValues() {
