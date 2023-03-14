@@ -112,17 +112,27 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
 
     func test_delete_retrievesEmptyFeedOnDeletionError() {
-//        let noDeletePermissionURL = cachesDirectory()
-//        let sut = makeSUT(storeURL: noDeletePermissionURL)
-//
-//        assertDeletionRetrievesEmptyFeedOnDeletionError(on: sut)
+        let stub = NSManagedObjectContext.alwaysFailingSave()
+        stub.startIntercepting()
+
+        let sut = makeSUT()
+
+        assertDeletionRetrievesEmptyFeedOnDeletionError(on: sut)
     }
     
     func test_delete_deliversErrorOnDeletionError() {
-//        let noDeletePermissionURL = cachesDirectory()
-//        let sut = makeSUT(storeURL: noDeletePermissionURL)
-//
-//        assertDeletionDeliversErrorOnDeletionError(on: sut)
+        let stub = NSManagedObjectContext.alwaysFailingSave()
+        let feed = uniqueImageFeed().local
+        let timestamp = Date()
+        let sut = makeSUT()
+
+        insert((feed, timestamp), to: sut)
+
+        stub.startIntercepting()
+
+        let deletionError = deleteCache(from: sut)
+
+        XCTAssertNotNil(deletionError, "Expected cache deletion to fail")
     }
 
     func test_sideEffectsOperations_runSerially() {
