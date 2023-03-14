@@ -49,12 +49,12 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
     
     func test_retrieve_hasNoSideEffectsOnFailure() {
-//        let storeURL = testSpecificStoreURL()
-//        let sut = makeSUT(storeURL: storeURL)
-//
-//        try! "invalid data".write(to: storeURL, atomically: false, encoding: .utf8)
-//
-//        assertRetrievalHasNoSideEffectsOnError(on: sut)
+        let stub = NSManagedObjectContext.alwaysFailingFetch()
+        stub.startIntercepting()
+
+        let sut = makeSUT()
+
+        assertRetrievalHasNoSideEffectsOnError(on: sut)
     }
     
     func test_insert_overridesPreviouslyInsertedCacheValues() {
