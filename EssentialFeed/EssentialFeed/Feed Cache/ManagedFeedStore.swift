@@ -22,9 +22,9 @@ public class ManagedFeedStore: FeedStore {
     }
 
     public func retrieve(completion: @escaping RetrievalCompletion) {
-        context.perform {
+        perform { context in
             do {
-                if let cache = try ManagedCache.find(in: self.context) {
+                if let cache = try ManagedCache.find(in: context) {
                     completion(.found(feed: cache.localFeed, timestamp: cache.timestamp))
                 } else {
                     completion(.empty)
@@ -37,34 +37,38 @@ public class ManagedFeedStore: FeedStore {
 
 
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        context.perform {
+        perform { context in
             do {
-                if let cache = try ManagedCache.find(in: self.context) {
-                    self.context.delete(cache)
+                if let cache = try ManagedCache.find(in: context) {
+                    context.delete(cache)
                 }
 
-                let cache = ManagedCache(context: self.context)
-                cache.feed = NSOrderedSet(array: feed.map { ManagedFeedImage.image(from: $0, in: self.context) })
+                let cache = ManagedCache(context: context)
+                cache.feed = NSOrderedSet(array: feed.map { ManagedFeedImage.image(from: $0, in: context) })
                 cache.timestamp = timestamp
 
-                try self.context.save()
+                try context.save()
                 completion(nil)
             } catch {
-                self.context.rollback()
+                context.rollback()
                 completion(error)
             }
         }
     }
 
     public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
-        context.perform {
+        perform { context in
             do {
-                try ManagedCache.find(in: self.context).map(self.context.delete).map(self.context.save)
+                try ManagedCache.find(in: context).map(context.delete).map(context.save)
                 completion(nil)
             } catch {
-                self.context.rollback()
+                context.rollback()
                 completion(error)
             }
         }
+    }
+
+    private func perform(_ action: @escaping (NSManagedObjectContext) -> Void) {
+        context.perform { [context] in action(context) }
     }
 }
