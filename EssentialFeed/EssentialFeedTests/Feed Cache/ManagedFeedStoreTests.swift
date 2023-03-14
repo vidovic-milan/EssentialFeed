@@ -1,21 +1,6 @@
 import XCTest
 import EssentialFeed
 
-class ManagedFeedStore: FeedStore {
-
-    func retrieve(completion: @escaping RetrievalCompletion) {
-        completion(.empty)
-    }
-
-    func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
-        fatalError("Needs to be implemented")
-    }
-
-    func deleteCachedFeed(completion: @escaping DeletionCompletion) {
-        fatalError("Needs to be implemented")
-    }
-}
-
 class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     
     override func setUp() {
@@ -43,9 +28,9 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
 
     func test_retrieve_deliversFoundValuesOnNonEmptyCache() {
-//        let sut = makeSUT()
-//
-//        assertRetrievalDeliversFoundValuesOnEmptyCache(on: sut)
+        let sut = makeSUT()
+
+        assertRetrievalDeliversFoundValuesOnEmptyCache(on: sut)
     }
     
     func test_retrieve_hasNoSideEffectsOnNonEmptyCache() {
@@ -145,7 +130,7 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     // - MARK: Helpers
     
     private func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> FeedStore {
-        let sut = ManagedFeedStore()
+        let sut = ManagedFeedStore(storeURL: storeURL ?? testSpecificStoreURL())
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
     }
