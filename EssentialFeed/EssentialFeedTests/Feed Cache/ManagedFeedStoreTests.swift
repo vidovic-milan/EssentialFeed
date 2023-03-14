@@ -88,9 +88,9 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
 
     func test_delete_completesSuccessfullyOnEmptyCache() {
-//        let sut = makeSUT()
-//
-//        assertDeletionCompletesSuccessfullyOnEmptyCache(on: sut)
+        let sut = makeSUT()
+
+        assertDeletionCompletesSuccessfullyOnEmptyCache(on: sut)
     }
     
     func test_delete_hasNoSideEffectsOnEmptyCache() {

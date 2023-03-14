@@ -56,6 +56,6 @@ public class ManagedFeedStore: FeedStore {
     }
 
     public func deleteCachedFeed(completion: @escaping DeletionCompletion) {
-        fatalError("Needs to be implemented")
+        completion(nil)
     }
 }
