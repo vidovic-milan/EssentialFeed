@@ -15,12 +15,9 @@ public class ManagedFeedStore: FeedStore {
             throw ManagedFeedStoreError.invalidModelName
         }
 
-        self.storeURL = storeURL
+        let container = try NSPersistentContainer.load(name: ManagedFeedStore.modelName, model: model, url: storeURL)
 
-        let container = NSPersistentContainer(name: ManagedFeedStore.modelName, managedObjectModel: model)
-        
-        container.persistentStoreDescriptions = [NSPersistentStoreDescription(url: storeURL)]
-        container.loadPersistentStores(completionHandler: { _, _ in })
+        self.storeURL = storeURL
         self.context = container.newBackgroundContext()
     }
 
