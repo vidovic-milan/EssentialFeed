@@ -75,15 +75,16 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
 
         let sut = makeSUT()
 
-
         assertInsertionDeliversErrorOnInsertionError(on: sut)
     }
 
     func test_insert_deliversEmptyFeedOnInsertionError() {
-//        let invalidStoreURL = URL(string: "invalid://store-url")!
-//        let sut = makeSUT(storeURL: invalidStoreURL)
-//
-//        assertInsertionDeliversErrorOnInsertionError(on: sut)
+        let stub = NSManagedObjectContext.alwaysFailingSave()
+        stub.startIntercepting()
+
+        let sut = makeSUT()
+
+        assertInsertionDeliversErrorOnInsertionError(on: sut)
     }
 
     func test_delete_completesSuccessfullyOnEmptyCache() {
