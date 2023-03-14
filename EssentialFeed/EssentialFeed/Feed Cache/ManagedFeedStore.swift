@@ -50,6 +50,7 @@ public class ManagedFeedStore: FeedStore {
                 try self.context.save()
                 completion(nil)
             } catch {
+                self.context.rollback()
                 completion(error)
             }
         }

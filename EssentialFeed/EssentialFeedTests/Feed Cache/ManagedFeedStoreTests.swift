@@ -84,7 +84,7 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
 
         let sut = makeSUT()
 
-        assertInsertionDeliversErrorOnInsertionError(on: sut)
+        assertInsertionDeliversEmptyFeedOnInsertionError(on: sut)
     }
 
     func test_delete_completesSuccessfullyOnEmptyCache() {
