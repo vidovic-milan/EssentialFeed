@@ -4,7 +4,7 @@ import EssentialFeed
 class ManagedFeedStore: FeedStore {
 
     func retrieve(completion: @escaping RetrievalCompletion) {
-        fatalError("Needs to be implemented")
+        completion(.empty)
     }
 
     func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
@@ -31,9 +31,9 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
     
     func test_retrieve_deliversEmptyOnEmptyCache() {
-//        let sut = makeSUT()
-//
-//        assertRetrievalReturnsEmptyCache(on: sut)
+        let sut = makeSUT()
+
+        assertRetrievalReturnsEmptyCache(on: sut)
     }
     
     func test_retrieve_hasNoSideEffectsOnEmptyCache() {
