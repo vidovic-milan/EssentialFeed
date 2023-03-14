@@ -39,11 +39,7 @@ public class ManagedFeedStore: FeedStore {
     public func insert(_ feed: [LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion) {
         perform { context in
             do {
-                if let cache = try ManagedCache.find(in: context) {
-                    context.delete(cache)
-                }
-
-                let cache = ManagedCache(context: context)
+                let cache = try ManagedCache.uniqueInstance(in: context)
                 cache.feed = NSOrderedSet(array: feed.map { ManagedFeedImage.image(from: $0, in: context) })
                 cache.timestamp = timestamp
 
