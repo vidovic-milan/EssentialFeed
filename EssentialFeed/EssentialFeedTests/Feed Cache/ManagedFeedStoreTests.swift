@@ -64,9 +64,9 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
 
     func test_insert_doesNotFailOnInsertingNewValues() {
-//        let sut = makeSUT()
-//
-//        assertInsertionDoesNotFailOnInsertingNewValues(on: sut)
+        let sut = makeSUT()
+
+        assertInsertionDoesNotFailOnInsertingNewValues(on: sut)
     }
     
     func test_insert_deliversErrorOnInsertionError() {
