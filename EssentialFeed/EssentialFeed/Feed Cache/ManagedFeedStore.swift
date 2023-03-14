@@ -44,16 +44,8 @@ public class ManagedFeedStore: FeedStore {
         }
 
         context.perform {
-            let managedImages = feed.map { local in
-                let managedImage = ManagedFeedImage(context: self.context)
-                managedImage.id = local.id
-                managedImage.location = local.location
-                managedImage.imageDescription = local.description
-                managedImage.url = local.url
-                return managedImage
-            }
             let cache = ManagedCache(context: self.context)
-            cache.feed = NSOrderedSet(array: managedImages)
+            cache.feed = NSOrderedSet(array: feed.map { ManagedFeedImage.image(from: $0, in: self.context) })
             cache.timestamp = timestamp
 
             try! self.context.save()

@@ -9,3 +9,14 @@ class ManagedFeedImage: NSManagedObject {
     @NSManaged var url: URL
     @NSManaged var cache: ManagedCache
 }
+
+extension ManagedFeedImage {
+    static func image(from local: LocalFeedImage, in context: NSManagedObjectContext) -> ManagedFeedImage {
+        let managedImage = ManagedFeedImage(context: context)
+        managedImage.id = local.id
+        managedImage.location = local.location
+        managedImage.imageDescription = local.description
+        managedImage.url = local.url
+        return managedImage
+    }
+}
