@@ -25,9 +25,7 @@ public class ManagedFeedStore: FeedStore {
         context.perform {
             do {
                 if let cache = try ManagedCache.find(in: self.context) {
-                    let cacheFeed = cache.feed.array as! [ManagedFeedImage]
-                    let localFeed = cacheFeed.map { LocalFeedImage(id: $0.id, description: $0.imageDescription, location: $0.location, url: $0.url) }
-                    completion(.found(feed: localFeed, timestamp: cache.timestamp))
+                    completion(.found(feed: cache.localFeed, timestamp: cache.timestamp))
                 } else {
                     completion(.empty)
                 }

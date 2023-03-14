@@ -19,4 +19,8 @@ extension ManagedFeedImage {
         managedImage.url = local.url
         return managedImage
     }
+
+    var localImage: LocalFeedImage {
+        return LocalFeedImage(id: id, description: imageDescription, location: location, url: url)
+    }
 }
