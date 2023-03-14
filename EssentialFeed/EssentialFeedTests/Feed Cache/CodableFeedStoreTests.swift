@@ -82,7 +82,7 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStore {
         let invalidStoreURL = URL(string: "invalid://store-url")!
         let sut = makeSUT(storeURL: invalidStoreURL)
 
-        assertInsertionDeliversErrorOnInsertionError(on: sut)
+        assertInsertionDeliversEmptyFeedOnInsertionError(on: sut)
     }
 
     func test_delete_completesSuccessfullyOnEmptyCache() {
