@@ -17,17 +17,7 @@ final class EssentialFeedIntegrationTests: XCTestCase {
     func test_load_deliverEmptyFeed() {
         let loadSUT = makeSUT()
 
-        let loadExp = expectation(description: "wait for load")
-        loadSUT.load { result in
-            switch result {
-            case .success(let receivedFeed):
-                XCTAssertEqual(receivedFeed, [])
-            case .failure(let error):
-                XCTFail("Expected to load empty feed, got \(error) instead")
-            }
-            loadExp.fulfill()
-        }
-        wait(for: [loadExp], timeout: 5.0)
+        expect(sut: loadSUT, toLoad: [])
     }
 
     func test_load_deliversInsertedFeed() {
@@ -37,17 +27,7 @@ final class EssentialFeedIntegrationTests: XCTestCase {
 
         save(feed: feed.models, with: saveSUT)
 
-        let loadExp = expectation(description: "wait for load")
-        loadSUT.load { result in
-            switch result {
-            case .success(let receivedFeed):
-                XCTAssertEqual(receivedFeed, feed.models)
-            case .failure(let error):
-                XCTFail("Expected to load feed, got \(error) instead")
-            }
-            loadExp.fulfill()
-        }
-        wait(for: [loadExp], timeout: 5.0)
+        expect(sut: loadSUT, toLoad: feed.models)
     }
 
     func test_load_deliversLatestFeed() {
@@ -60,17 +40,7 @@ final class EssentialFeedIntegrationTests: XCTestCase {
         save(feed: firstFeed.models, with: firstSaveSUT)
         save(feed: lastFeed.models, with: lastSaveSUT)
 
-        let loadExp = expectation(description: "wait for load")
-        loadSUT.load { result in
-            switch result {
-            case .success(let receivedFeed):
-                XCTAssertEqual(receivedFeed, lastFeed.models)
-            case .failure(let error):
-                XCTFail("Expected to load last feed, got \(error) instead")
-            }
-            loadExp.fulfill()
-        }
-        wait(for: [loadExp], timeout: 5.0)
+        expect(sut: loadSUT, toLoad: lastFeed.models)
     }
 
     // - MARK: Helpers
@@ -90,6 +60,20 @@ final class EssentialFeedIntegrationTests: XCTestCase {
         }
 
         wait(for: [saveExp], timeout: 5.0)
+    }
+
+    private func expect(sut loader: LocalFeedLoader, toLoad feed: [FeedImage], file: StaticString = #file, line: UInt = #line) {
+        let loadExp = expectation(description: "wait for load")
+        loader.load { result in
+            switch result {
+            case .success(let receivedFeed):
+                XCTAssertEqual(receivedFeed, feed)
+            case .failure(let error):
+                XCTFail("Expected to load last feed, got \(error) instead")
+            }
+            loadExp.fulfill()
+        }
+        wait(for: [loadExp], timeout: 5.0)
     }
     
     private func setupEmptyStoreState() {
