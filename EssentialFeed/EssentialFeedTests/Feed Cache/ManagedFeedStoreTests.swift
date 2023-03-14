@@ -136,9 +136,9 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
 
     func test_sideEffectsOperations_runSerially() {
-//        let sut = makeSUT()
-//
-//        assertSideEffectOperationsRunSerially(on: sut)
+        let sut = makeSUT()
+
+        assertSideEffectOperationsRunSerially(on: sut)
     }
 
     // - MARK: Helpers
