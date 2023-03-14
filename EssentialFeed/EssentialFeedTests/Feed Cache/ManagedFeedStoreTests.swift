@@ -106,9 +106,9 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     }
     
     func test_delete_emptiesPreviouslyInsertedCache() {
-//        let sut = makeSUT()
-//
-//        assertDeletionEmptiesPreviouslyInsertedCache(on: sut)
+        let sut = makeSUT()
+
+        assertDeletionEmptiesPreviouslyInsertedCache(on: sut)
     }
 
     func test_delete_retrievesEmptyFeedOnDeletionError() {
