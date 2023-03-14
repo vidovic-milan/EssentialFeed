@@ -35,12 +35,7 @@ final class EssentialFeedIntegrationTests: XCTestCase {
         let saveSUT = makeSUT()
         let feed = uniqueImageFeed()
 
-        let saveExp = expectation(description: "wait for save")
-        saveSUT.save(feed.models) { _ in
-            saveExp.fulfill()
-        }
-
-        wait(for: [saveExp], timeout: 5.0)
+        save(feed: feed.models, with: saveSUT)
 
         let loadExp = expectation(description: "wait for load")
         loadSUT.load { result in
@@ -62,19 +57,8 @@ final class EssentialFeedIntegrationTests: XCTestCase {
         let firstFeed = uniqueImageFeed()
         let lastFeed = uniqueImageFeed()
 
-        let firstSaveExp = expectation(description: "wait for save")
-        firstSaveSUT.save(firstFeed.models) { _ in
-            firstSaveExp.fulfill()
-        }
-
-        wait(for: [firstSaveExp], timeout: 5.0)
-
-        let lastSaveExp = expectation(description: "wait for save")
-        lastSaveSUT.save(lastFeed.models) { _ in
-            lastSaveExp.fulfill()
-        }
-
-        wait(for: [lastSaveExp], timeout: 5.0)
+        save(feed: firstFeed.models, with: firstSaveSUT)
+        save(feed: lastFeed.models, with: lastSaveSUT)
 
         let loadExp = expectation(description: "wait for load")
         loadSUT.load { result in
@@ -97,6 +81,15 @@ final class EssentialFeedIntegrationTests: XCTestCase {
         trackForMemoryLeaks(sut, file: file, line: line)
         trackForMemoryLeaks(store, file: file, line: line)
         return sut
+    }
+
+    private func save(feed: [FeedImage], with loader: LocalFeedLoader, file: StaticString = #file, line: UInt = #line) {
+        let saveExp = expectation(description: "wait for save")
+        loader.save(feed) { _ in
+            saveExp.fulfill()
+        }
+
+        wait(for: [saveExp], timeout: 5.0)
     }
     
     private func setupEmptyStoreState() {
