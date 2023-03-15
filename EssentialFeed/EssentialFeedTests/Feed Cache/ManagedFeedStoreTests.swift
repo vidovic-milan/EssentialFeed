@@ -3,18 +3,6 @@ import EssentialFeed
 
 class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
     
-    override func setUp() {
-        super.setUp()
-        
-        setupEmptyStoreState()
-    }
-    
-    override func tearDown() {
-        super.tearDown()
-        
-        undoStoreSideEffects()
-    }
-    
     func test_retrieve_deliversEmptyOnEmptyCache() {
         let sut = makeSUT()
 
@@ -149,32 +137,17 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
 
     // - MARK: Helpers
     
-    private func makeSUT(storeURL: URL? = nil, file: StaticString = #file, line: UInt = #line) -> FeedStore {
-        guard let sut = try? ManagedFeedStore(storeURL: storeURL ?? testSpecificStoreURL()) else {
+    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> FeedStore {
+        guard let sut = try? ManagedFeedStore(storeURL: inMemoryStoreURL()) else {
             fatalError("ManagedFeedStore creation failed")
         }
         trackForMemoryLeaks(sut, file: file, line: line)
         return sut
     }
     
-    private func setupEmptyStoreState() {
-        deleteStoreArtifacts()
-    }
-    
-    private func undoStoreSideEffects() {
-        deleteStoreArtifacts()
-    }
-    
-    private func deleteStoreArtifacts() {
-        try? FileManager.default.removeItem(at: testSpecificStoreURL())
-    }
-    
-    private func testSpecificStoreURL() -> URL {
-        return cachesDirectory().appendingPathComponent("\(type(of: self)).store")
-    }
-    
-    private func cachesDirectory() -> URL {
-        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+    private func inMemoryStoreURL() -> URL {
+        URL(fileURLWithPath: "/dev/null")
+            .appendingPathComponent("\(type(of: self)).store")
     }
     
 }
