@@ -69,10 +69,10 @@ public class ManagedFeedStore: FeedStore {
         perform { context in
             do {
                 try ManagedCache.find(in: context).map(context.delete).map(context.save)
-                completion(nil)
+                completion(.success(()))
             } catch {
                 context.rollback()
-                completion(error)
+                completion(.failure(error))
             }
         }
     }

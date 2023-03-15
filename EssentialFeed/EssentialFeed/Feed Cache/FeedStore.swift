@@ -1,7 +1,8 @@
 import Foundation
 
 public protocol FeedStore {
-	typealias DeletionCompletion = (Error?) -> Void
+    typealias DeletionResult = Result<Void, Error>
+	typealias DeletionCompletion = (DeletionResult) -> Void
 
     typealias InsertionResult = Result<Void, Error>
 	typealias InsertionCompletion = (InsertionResult) -> Void
