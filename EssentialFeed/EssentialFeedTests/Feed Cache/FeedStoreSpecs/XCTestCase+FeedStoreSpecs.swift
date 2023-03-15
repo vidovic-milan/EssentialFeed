@@ -41,19 +41,19 @@ extension FeedStoreSpecs where Self: XCTestCase {
 
     func assertInsertionDoesNotFailOnInsertingNewValues(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
         let firstInsertionError = insert((uniqueImageFeed().local, Date()), to: sut)
-        XCTAssertNil(firstInsertionError, "Expected to insert cache successfully")
+        XCTAssertNil(firstInsertionError, "Expected to insert cache successfully", file: file, line: line)
         
         let latestFeed = uniqueImageFeed().local
         let latestTimestamp = Date()
         let latestInsertionError = insert((latestFeed, latestTimestamp), to: sut)
         
-        XCTAssertNil(latestInsertionError, "Expected to override cache successfully")
+        XCTAssertNil(latestInsertionError, "Expected to override cache successfully", file: file, line: line)
     }
 
     func assertDeletionCompletesSuccessfullyOnEmptyCache(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
         let deletionError = deleteCache(from: sut)
         
-        XCTAssertNil(deletionError, "Expected empty cache deletion to succeed")
+        XCTAssertNil(deletionError, "Expected empty cache deletion to succeed", file: file, line: line)
     }
 
     func assertDeletionHasNoSideEffectsOnEmptyCache(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
@@ -108,8 +108,12 @@ extension FeedStoreSpecs where Self: XCTestCase {
     func insert(_ cache: (feed: [LocalFeedImage], timestamp: Date), to sut: FeedStore) -> Error? {
         let exp = expectation(description: "Wait for cache insertion")
         var insertionError: Error?
-        sut.insert(cache.feed, timestamp: cache.timestamp) { receivedInsertionError in
-            insertionError = receivedInsertionError
+        sut.insert(cache.feed, timestamp: cache.timestamp) { result in
+            switch result {
+            case .failure(let error):
+                insertionError = error
+            default: break
+            }
             exp.fulfill()
         }
         wait(for: [exp], timeout: 1.0)

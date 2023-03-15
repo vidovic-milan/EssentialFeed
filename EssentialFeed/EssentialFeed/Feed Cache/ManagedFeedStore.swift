@@ -57,10 +57,10 @@ public class ManagedFeedStore: FeedStore {
                 cache.timestamp = timestamp
 
                 try context.save()
-                completion(nil)
+                completion(.success(()))
             } catch {
                 context.rollback()
-                completion(error)
+                completion(.failure(error))
             }
         }
     }
