@@ -5,7 +5,7 @@ extension FailableDeleteFeedStoreSpecs where Self: XCTestCase {
     func assertDeletionRetrievesEmptyFeedOnDeletionError(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {
         deleteCache(from: sut)
 
-        expect(sut, toRetrieve: .empty, file: file, line: line)
+        expect(sut, toRetrieve: .success(.empty), file: file, line: line)
     }
 
     func assertDeletionDeliversErrorOnDeletionError(on sut: FeedStore, file: StaticString = #file, line: UInt = #line) {

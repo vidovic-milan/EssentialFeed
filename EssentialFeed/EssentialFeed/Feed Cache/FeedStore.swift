@@ -1,9 +1,10 @@
 import Foundation
 
-public enum RetrieveCachedFeedResult {
-	case empty
-	case found(feed: [LocalFeedImage], timestamp: Date)
-	case failure(Error)
+public typealias RetrieveCachedFeedResult = Result<CacheResult,Error>
+
+public enum CacheResult {
+    case empty
+    case found(feed: [LocalFeedImage], timestamp: Date)
 }
 
 public protocol FeedStore {
