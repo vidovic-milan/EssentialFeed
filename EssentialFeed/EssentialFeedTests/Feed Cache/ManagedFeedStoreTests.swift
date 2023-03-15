@@ -126,7 +126,7 @@ class ManagedFeedStoreTests: XCTestCase, FailableFeedStore {
 
         deleteCache(from: sut)
 
-        expect(sut, toRetrieve: .success(.found(feed: feed, timestamp: timestamp)))
+        expect(sut, toRetrieve: .success(.some((feed: feed, timestamp: timestamp))))
     }
 
     func test_sideEffectsOperations_runSerially() {
