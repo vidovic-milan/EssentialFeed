@@ -110,17 +110,31 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStore {
 	}
 
     func test_delete_hasNoSideEffectsOnDeletionError() {
-        let noDeletePermissionURL = cachesDirectory()
+        let noDeletePermissionURL = cachesDirectory().appendingPathComponent("file.txt")
+        try? FileManager.default.removeItem(at: noDeletePermissionURL)
+
+        FileManager.default.createFile(atPath: noDeletePermissionURL.path, contents: "a".data(using: .utf8), attributes: [.posixPermissions:  NSNumber(value: 0o000), .busy: NSNumber(value: 1), .immutable: NSNumber(value: 1), .appendOnly: NSNumber(value: 1)])
+
         let sut = makeSUT(storeURL: noDeletePermissionURL)
         
         assertDeletionRetrievesEmptyFeedOnDeletionError(on: sut)
+        
+        try! FileManager.default.setAttributes([.posixPermissions: NSNumber(value: 0o666), .busy: NSNumber(value: 0), .immutable: NSNumber(value: 0), .appendOnly: NSNumber(value: 0)], ofItemAtPath: noDeletePermissionURL.path)
+        try! FileManager.default.removeItem(at: noDeletePermissionURL)
     }
 	
 	func test_delete_deliversErrorOnDeletionError() {
-		let noDeletePermissionURL = cachesDirectory()
-		let sut = makeSUT(storeURL: noDeletePermissionURL)
+        let noDeletePermissionURL = cachesDirectory().appendingPathComponent("file.txt")
+        try? FileManager.default.removeItem(at: noDeletePermissionURL)
 
+        FileManager.default.createFile(atPath: noDeletePermissionURL.path, contents: "a".data(using: .utf8), attributes: [.posixPermissions:  NSNumber(value: 0o000), .busy: NSNumber(value: 1), .immutable: NSNumber(value: 1), .appendOnly: NSNumber(value: 1)])
+
+        let sut = makeSUT(storeURL: noDeletePermissionURL)
+        
         assertDeletionDeliversErrorOnDeletionError(on: sut)
+        
+        try! FileManager.default.setAttributes([.posixPermissions: NSNumber(value: 0o666), .busy: NSNumber(value: 0), .immutable: NSNumber(value: 0), .appendOnly: NSNumber(value: 0)], ofItemAtPath: noDeletePermissionURL.path)
+        try! FileManager.default.removeItem(at: noDeletePermissionURL)
 	}
 
     func test_sideEffectsOperations_runSerially() {
@@ -156,5 +170,14 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedStore {
 	private func cachesDirectory() -> URL {
 		return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
 	}
+
+    private func noDeletePermissionURL() -> URL {
+        let path = cachesDirectory().appendingPathComponent("file.txt")
+
+        FileManager.default.createFile(atPath: path.path, contents: "a".data(using: .utf8), attributes: [.posixPermissions:  NSNumber(value: 0o000), .busy: NSNumber(value: 1), .immutable: NSNumber(value: 1), .appendOnly: NSNumber(value: 1)])
+        try! FileManager.default.setAttributes([.posixPermissions: NSNumber(value: 0o666), .busy: NSNumber(value: 0), .immutable: NSNumber(value: 0), .appendOnly: NSNumber(value: 0)], ofItemAtPath: path.path)
+        try! FileManager.default.removeItem(at: path)
+        return path
+    }
 	
 }
