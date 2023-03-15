@@ -1,9 +1,6 @@
 import Foundation
 
-public enum HTTPClientResult {
-	case success(Data, HTTPURLResponse)
-	case failure(Error)
-}
+public typealias HTTPClientResult = Result<(Data, HTTPURLResponse), Error>
 
 public protocol HTTPClient {
     /// Completion can be invoked on any queue
