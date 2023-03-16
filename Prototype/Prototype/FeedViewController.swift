@@ -16,14 +16,19 @@ class FeedViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Feed Cell") as! FeedTableViewCell
-        cell.descriptionLabel.text = feed[indexPath.row].description
-        cell.descriptionLabel.isHidden = feed[indexPath.row].description == nil
-
-        cell.locationLabel.text = feed[indexPath.row].location
-        cell.locationContainer.isHidden = feed[indexPath.row].location == nil
-
-        cell.feedImageView.image = UIImage(named: feed[indexPath.row].imageName)
+        cell.configure(with: feed[indexPath.row])
         return cell
     }
 }
 
+extension FeedTableViewCell {
+    func configure(with model: FeedViewModel) {
+        descriptionLabel.text = model.description
+        descriptionLabel.isHidden = model.description == nil
+
+        locationLabel.text = model.location
+        locationContainer.isHidden = model.location == nil
+
+        fadeIn(UIImage(named: model.imageName))
+    }
+}
