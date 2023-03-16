@@ -1,6 +1,6 @@
 import UIKit
 
-class ViewController: UITableViewController {
+class FeedViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 6
