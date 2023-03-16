@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE1FDA2829C39AAF00BFDFC0 /* FeedTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1FDA2729C39AAF00BFDFC0 /* FeedTableViewCell.swift */; };
+		BE1FDA2A29C39C4100BFDFC0 /* FeedViewModel+Prototype.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1FDA2929C39C4100BFDFC0 /* FeedViewModel+Prototype.swift */; };
 		BE9D2D2029C393FF006EA44C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9D2D1F29C393FF006EA44C /* AppDelegate.swift */; };
 		BE9D2D2229C393FF006EA44C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9D2D2129C393FF006EA44C /* SceneDelegate.swift */; };
 		BE9D2D2429C393FF006EA44C /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9D2D2329C393FF006EA44C /* FeedViewController.swift */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		BE1FDA2729C39AAF00BFDFC0 /* FeedTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedTableViewCell.swift; sourceTree = "<group>"; };
+		BE1FDA2929C39C4100BFDFC0 /* FeedViewModel+Prototype.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FeedViewModel+Prototype.swift"; sourceTree = "<group>"; };
 		BE9D2D1C29C393FF006EA44C /* Prototype.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Prototype.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE9D2D1F29C393FF006EA44C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BE9D2D2129C393FF006EA44C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -59,10 +63,12 @@
 				BE9D2D1F29C393FF006EA44C /* AppDelegate.swift */,
 				BE9D2D2129C393FF006EA44C /* SceneDelegate.swift */,
 				BE9D2D2329C393FF006EA44C /* FeedViewController.swift */,
+				BE1FDA2729C39AAF00BFDFC0 /* FeedTableViewCell.swift */,
 				BE9D2D2529C393FF006EA44C /* Main.storyboard */,
 				BE9D2D2829C39401006EA44C /* Assets.xcassets */,
 				BE9D2D2A29C39401006EA44C /* LaunchScreen.storyboard */,
 				BE9D2D2D29C39401006EA44C /* Info.plist */,
+				BE1FDA2929C39C4100BFDFC0 /* FeedViewModel+Prototype.swift */,
 			);
 			path = Prototype;
 			sourceTree = "<group>";
@@ -139,6 +145,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE9D2D2429C393FF006EA44C /* FeedViewController.swift in Sources */,
+				BE1FDA2A29C39C4100BFDFC0 /* FeedViewModel+Prototype.swift in Sources */,
+				BE1FDA2829C39AAF00BFDFC0 /* FeedTableViewCell.swift in Sources */,
 				BE9D2D2029C393FF006EA44C /* AppDelegate.swift in Sources */,
 				BE9D2D2229C393FF006EA44C /* SceneDelegate.swift in Sources */,
 			);
