@@ -104,6 +104,20 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.cancelLoadingURLs, [url0, url1])
     }
 
+    func test_feedImageView_displaysShimmeringAnimationWhileLoadingImage() {
+        let url0 = URL(string: "https://image0.com")!
+        let url1 = URL(string: "https://image1.com")!
+        let image0 = makeImage(url: url0)
+        let image1 = makeImage(url: url1)
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        loader.completeLoading(with: [image0, image1], at: 0)
+        sut.simulateFeedImageVisible(at: 0)
+
+        XCTAssertTrue(sut.isFeedImageShimmering(at: 0))
+    }
+
     func test_feedImageView_loadsImageURLsWhenAlmostVisible() {
         let url0 = URL(string: "https://image0.com")!
         let url1 = URL(string: "https://image1.com")!
@@ -226,6 +240,10 @@ private extension FeedImageCell {
     var isShowingLocation: Bool {
         return locationContainer.isHidden == false
     }
+
+    var isShimmeringAnimationVisible: Bool {
+        return feedImageContainer.layer.mask != nil
+    }
 }
 
 private extension UITableViewController {
@@ -239,6 +257,11 @@ private extension UITableViewController {
 
     var isLoadingIndicatorVisible: Bool {
         refreshControl?.isRefreshing == true
+    }
+
+    func isFeedImageShimmering(at index: Int) -> Bool {
+        let cell = feedImageView(at: index)
+        return cell?.isShimmeringAnimationVisible == true
     }
 
     func feedImageView(at index: Int) -> FeedImageCell? {
