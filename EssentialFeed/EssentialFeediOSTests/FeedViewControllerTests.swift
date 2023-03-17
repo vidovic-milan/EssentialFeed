@@ -1,45 +1,6 @@
 import XCTest
-import UIKit
 import EssentialFeed
-
-class FeedViewController: UITableViewController {
-    private var loader: FeedLoader?
-    private var feed = [FeedImage]()
-
-    convenience init(loader: FeedLoader) {
-        self.init()
-        self.loader = loader
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        refreshControl = UIRefreshControl()
-        refreshControl?.addTarget(self, action: #selector(loadFeed), for: .valueChanged)
-        loadFeed()
-    }
-
-    @objc private func loadFeed() {
-        refreshControl?.beginRefreshing()
-        loader?.load { [weak self] result in
-            self?.feed = (try? result.get()) ?? []
-            self?.tableView.reloadData()
-            self?.refreshControl?.endRefreshing()
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return feed.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let model = feed[indexPath.row]
-        let cell = FeedImageCell()
-        cell.locationLabel.text = model.location
-        cell.descriptionLabel.text = model.description
-        cell.locationContainer.isHidden = model.location == nil
-        return cell
-    }
-}
+import EssentialFeediOS
 
 class FeedViewControllerTests: XCTestCase {
     func test_loadFeedAction_requestsFeedFromLoader() {
@@ -149,12 +110,6 @@ private extension FeedImageCell {
     var isShowingLocation: Bool {
         return locationContainer.isHidden == false
     }
-}
-
-class FeedImageCell: UITableViewCell {
-    let descriptionLabel = UILabel()
-    let locationLabel = UILabel()
-    let locationContainer = UIStackView()
 }
 
 private extension UITableViewController {
