@@ -31,7 +31,7 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(sut.isLoadingIndicatorVisible, true)
 
         sut.simulateUserInitiatedFeedLoad()
-        loader.completeLoading(at: 1)
+        loader.completeLoadingWithError(at: 1)
         XCTAssertEqual(sut.isLoadingIndicatorVisible, false)
     }
 
@@ -51,6 +51,19 @@ class FeedViewControllerTests: XCTestCase {
         sut.simulateUserInitiatedFeedLoad()
         loader.completeLoading(with: [image0, image1, image2, image3], at: 1)
         assertThat(sut, hasDisplayed: [image0, image1, image2, image3])
+    }
+
+    func test_loadFeedCompletion_doesNotAlterCurrentImages() {
+        let image0 = makeImage(description: "a desc", location: "a loc")
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        loader.completeLoading(with: [image0], at: 0)
+        assertThat(sut, hasDisplayed: [image0])
+
+        sut.simulateUserInitiatedFeedLoad()
+        loader.completeLoadingWithError(at: 1)
+        assertThat(sut, hasDisplayed: [image0])
     }
 
     // MARK: - Helpers
@@ -94,6 +107,11 @@ class FeedViewControllerTests: XCTestCase {
 
         func completeLoading(with feed: [FeedImage] = [], at index: Int) {
             loadCompletions[index](.success(feed))
+        }
+
+        func completeLoadingWithError(at index: Int) {
+            let error = NSError(domain: "domain", code: 1)
+            loadCompletions[index](.failure(error))
         }
     }
 }
