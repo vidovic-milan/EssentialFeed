@@ -5,7 +5,7 @@ public protocol FeedImageLoader {
     func loadImage(from url: URL)
 }
 
-public final class FeedViewController: UITableViewController {
+public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
     private var feedLoader: FeedLoader?
     private var imageLoader: FeedImageLoader?
     private var feed = [FeedImage]()
@@ -20,6 +20,7 @@ public final class FeedViewController: UITableViewController {
         super.viewDidLoad()
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(loadFeed), for: .valueChanged)
+        tableView.prefetchDataSource = self
         loadFeed()
     }
 
@@ -46,5 +47,11 @@ public final class FeedViewController: UITableViewController {
         cell.locationContainer.isHidden = model.location == nil
         imageLoader?.loadImage(from: model.url)
         return cell
+    }
+
+    public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
+        indexPaths.forEach { indexPath in
+            imageLoader?.loadImage(from: feed[indexPath.row].url)
+        }
     }
 }
