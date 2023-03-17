@@ -34,10 +34,10 @@ class FeedViewControllerTests: XCTestCase {
         sut.loadViewIfNeeded()
         XCTAssertEqual(loader.loadCallCount, 1)
 
-        sut.simulatePullToRefresh()
+        sut.simulateUserInitiatedFeedLoad()
         XCTAssertEqual(loader.loadCallCount, 2)
 
-        sut.simulatePullToRefresh()
+        sut.simulateUserInitiatedFeedLoad()
         XCTAssertEqual(loader.loadCallCount, 3)
     }
 
@@ -45,18 +45,17 @@ class FeedViewControllerTests: XCTestCase {
         let (sut, loader) = makeSUT()
 
         sut.loadViewIfNeeded()
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, true)
+        XCTAssertEqual(sut.isLoadingIndicatorVisible, true)
 
-        sut.loadViewIfNeeded()
         loader.completeLoading(at: 0)
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, false)
+        XCTAssertEqual(sut.isLoadingIndicatorVisible, false)
 
-        sut.simulatePullToRefresh()
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, true)
+        sut.simulateUserInitiatedFeedLoad()
+        XCTAssertEqual(sut.isLoadingIndicatorVisible, true)
 
-        sut.simulatePullToRefresh()
+        sut.simulateUserInitiatedFeedLoad()
         loader.completeLoading(at: 1)
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, false)
+        XCTAssertEqual(sut.isLoadingIndicatorVisible, false)
     }
 
     // MARK: - Helpers
@@ -84,7 +83,11 @@ class FeedViewControllerTests: XCTestCase {
 }
 
 private extension UITableViewController {
-    func simulatePullToRefresh() {
+    var isLoadingIndicatorVisible: Bool {
+        refreshControl?.isRefreshing == true
+    }
+
+    func simulateUserInitiatedFeedLoad() {
         refreshControl?.allTargets.forEach { target in
             refreshControl?.actions(forTarget: target, forControlEvent: .valueChanged)?.forEach { action in
                 (self as NSObject).perform(Selector(action))
