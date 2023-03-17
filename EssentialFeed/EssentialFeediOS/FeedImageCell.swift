@@ -6,7 +6,17 @@ public class FeedImageCell: UITableViewCell {
     public let locationContainer = UIStackView()
     public let feedImageContainer = UIView()
     public let feedImageView = UIImageView()
-    public let retryButton = UIButton()
+    public lazy var retryButton: UIButton = {
+        let button = UIButton()
+        button.addTarget(self, action: #selector(retry), for: .touchUpInside)
+        return button
+    }()
+
+    var onRetry: (() -> Void)?
+
+    @objc private func retry() {
+        onRetry?()
+    }
 }
 
 extension UIView {
