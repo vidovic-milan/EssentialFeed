@@ -85,6 +85,25 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadImageURLs, [url0, url1])
     }
 
+    func test_feedImageView_cancelsLoadingWhenNotVisibleAnymore() {
+        let url0 = URL(string: "https://image0.com")!
+        let url1 = URL(string: "https://image1.com")!
+        let image0 = makeImage(url: url0)
+        let image1 = makeImage(url: url1)
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        loader.completeLoading(with: [image0, image1], at: 0)
+
+        XCTAssertEqual(loader.loadImageURLs, [])
+
+        sut.simulateFeedImageNotVisible(at: 0)
+        XCTAssertEqual(loader.cancelLoadingURLs, [url0])
+
+        sut.simulateFeedImageNotVisible(at: 1)
+        XCTAssertEqual(loader.cancelLoadingURLs, [url0, url1])
+    }
+
     func test_feedImageView_loadsImageURLsWhenAlmostVisible() {
         let url0 = URL(string: "https://image0.com")!
         let url1 = URL(string: "https://image1.com")!
@@ -104,7 +123,7 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadImageURLs, [url0, url1])
     }
 
-    func test_feedImageView_cancelsLoadingImagesWhenFeedNotVisible() {
+    func test_feedImageView_cancelsLoadingImagesWhenFeedCancelsDisplaying() {
         let url0 = URL(string: "https://image0.com")!
         let url1 = URL(string: "https://image1.com")!
         let image0 = makeImage(url: url0)
@@ -234,12 +253,17 @@ private extension UITableViewController {
         _ = feedImageView(at: index)
     }
 
+    func simulateFeedImageNotVisible(at index: Int) {
+        let cell = feedImageView(at: index)
+        tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: IndexPath(row: index, section: feedSection))
+    }
+
     func simulateFeedImageAlmostVisible(at index: Int) {
         tableView.prefetchDataSource?.tableView(tableView, prefetchRowsAt: [IndexPath(row: index, section: feedSection)])
     }
 
     func simulateFeedImageLoadingCancels(at index: Int) {
-        simulateFeedImageVisible(at: index)
+        simulateFeedImageAlmostVisible(at: index)
         tableView.prefetchDataSource?.tableView?(tableView, cancelPrefetchingForRowsAt: [IndexPath(row: index, section: feedSection)])
     }
 

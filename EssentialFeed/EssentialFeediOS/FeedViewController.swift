@@ -55,6 +55,10 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
         return cell
     }
 
+    public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        loadTasks[indexPath]?.cancel()
+    }
+
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
             let model = feed[indexPath.row]
