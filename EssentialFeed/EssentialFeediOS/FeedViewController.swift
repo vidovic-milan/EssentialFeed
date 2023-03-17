@@ -3,6 +3,7 @@ import EssentialFeed
 
 public protocol FeedImageLoader {
     func loadImage(from url: URL)
+    func cancelLoading(from url: URL)
 }
 
 public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
@@ -52,6 +53,12 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
             imageLoader?.loadImage(from: feed[indexPath.row].url)
+        }
+    }
+
+    public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
+        indexPaths.forEach { indexPath in
+            imageLoader?.cancelLoading(from: feed[indexPath.row].url)
         }
     }
 }
