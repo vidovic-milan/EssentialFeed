@@ -14,19 +14,19 @@ class FeedViewController: UITableViewController {
         super.viewDidLoad()
         refreshControl = UIRefreshControl()
         refreshControl?.addTarget(self, action: #selector(loadFeed), for: .valueChanged)
+        loadFeed()
+    }
+
+    @objc private func loadFeed() {
         refreshControl?.beginRefreshing()
         loader?.load { [weak self] _ in
             self?.refreshControl?.endRefreshing()
         }
     }
-
-    @objc private func loadFeed() {
-        loader?.load { _ in }
-    }
 }
 
 class FeedViewControllerTests: XCTestCase {
-    func test_init_doesNotCallLoad() {
+    func test_loadFeedAction_requestsFeedFromLoader() {
         let (sut, loader) = makeSUT()
 
         XCTAssertEqual(loader.loadCallCount, 0)
@@ -41,37 +41,21 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadCallCount, 3)
     }
 
-    func test_viewDidLoad_showsLoadingIndicator() {
-        let (sut, _) = makeSUT()
-
-        sut.loadViewIfNeeded()
-
-        XCTAssertEqual(sut.refreshControl?.isRefreshing, true)
-    }
-
-    func test_viewDidLoad_hideLoadingIndicatorOnLoadCompletion() {
+    func test_loadingFeedIndicator_isVisibleWhenLoadingFeed() {
         let (sut, loader) = makeSUT()
 
         sut.loadViewIfNeeded()
-        loader.completeLoading()
+        XCTAssertEqual(sut.refreshControl?.isRefreshing, true)
 
+        sut.loadViewIfNeeded()
+        loader.completeLoading(at: 0)
         XCTAssertEqual(sut.refreshControl?.isRefreshing, false)
-    }
-
-    func test_pullToRefresh_showsLoadingIndicator() {
-        let (sut, _) = makeSUT()
 
         sut.simulatePullToRefresh()
-
         XCTAssertEqual(sut.refreshControl?.isRefreshing, true)
-    }
-
-    func test_pullToRefresh_hideLoadingIndicatorOnLoadCompletion() {
-        let (sut, loader) = makeSUT()
 
         sut.simulatePullToRefresh()
-        loader.completeLoading()
-
+        loader.completeLoading(at: 1)
         XCTAssertEqual(sut.refreshControl?.isRefreshing, false)
     }
 
@@ -93,8 +77,8 @@ class FeedViewControllerTests: XCTestCase {
             loadCompletions.append(completion)
         }
 
-        func completeLoading() {
-            loadCompletions[0](.success([]))
+        func completeLoading(at index: Int) {
+            loadCompletions[index](.success([]))
         }
     }
 }
