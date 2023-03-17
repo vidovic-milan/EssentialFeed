@@ -141,6 +141,26 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertFalse(view1?.isShimmeringAnimationVisible == true)
     }
 
+    func test_feedImageView_rendersImageLoadedFromUrl() {
+        let url0 = URL(string: "https://image0.com")!
+        let url1 = URL(string: "https://image1.com")!
+        let image0 = makeFeedImage(url: url0)
+        let image1 = makeFeedImage(url: url1)
+        let imageData = UIImage.make(from: .red).pngData()!
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        loader.completeLoading(with: [image0, image1], at: 0)
+
+        let view0 = sut.feedImageView(at: 0)
+        loader.completeLoadingImage(with: imageData, at: 0)
+        XCTAssertEqual(view0?.renderedImage, imageData)
+
+        let view1 = sut.feedImageView(at: 1)
+        loader.completeLoadingImageWithError(at: 1)
+        XCTAssertEqual(view1?.renderedImage, .none)
+    }
+
     func test_feedImageView_loadsImageURLsWhenAlmostVisible() {
         let url0 = URL(string: "https://image0.com")!
         let url1 = URL(string: "https://image1.com")!
@@ -278,6 +298,10 @@ private extension FeedImageCell {
     var isShimmeringAnimationVisible: Bool {
         return feedImageContainer.layer.mask != nil
     }
+
+    var renderedImage: Data? {
+        return feedImageView.image?.pngData()
+    }
 }
 
 private extension UITableViewController {
@@ -327,12 +351,12 @@ private extension UITableViewController {
 private extension UIImage {
     static func make(from color: UIColor) -> UIImage {
         let rect = CGRect(x: 0, y: 0, width: 1, height: 1)
-        UIGraphicsBeginImageContext (rect.size)
-        let context = UIGraphicsGetCurrentContext()!
-        context.setFillColor(color.cgColor)
-        context.fill (rect)
-        let img = UIGraphicsGetImageFromCurrentImageContext ()
-        UIGraphicsEndImageContext ()
-        return img!
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        
+        return UIGraphicsImageRenderer(size: rect.size, format: format).image { rendererContext in
+            color.setFill()
+            rendererContext.fill(rect)
+        }
     }
 }
