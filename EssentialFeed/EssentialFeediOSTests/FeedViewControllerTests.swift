@@ -196,25 +196,21 @@ class FeedViewControllerTests: XCTestCase {
         // MARK: - FeedImageLoader
 
         var loadImageURLs: [URL] = []
-        private var loadTasks: [(url: URL, task: TaskStub)] = []
         @discardableResult
         func loadImage(from url: URL) -> FeedImageLoaderDataTask {
-            let task = TaskStub()
-            loadTasks.append((url, task))
+            let task = TaskSpy { [weak self] in self?.cancelLoadingURLs.append(url) }
             loadImageURLs.append(url)
             return task
         }
 
-        private class TaskStub: FeedImageLoaderDataTask {
-            var cancelLoadingCallCount = 0
+        private struct TaskSpy: FeedImageLoaderDataTask {
+            var cancelCallback: () -> Void
             func cancel() {
-                cancelLoadingCallCount += 1
+                cancelCallback()
             }
         }
 
-        var cancelLoadingURLs: [URL] {
-            loadTasks.filter { $0.task.cancelLoadingCallCount > 0 }.map { $0.url }
-        }
+        var cancelLoadingURLs: [URL] = []
     }
 }
 
