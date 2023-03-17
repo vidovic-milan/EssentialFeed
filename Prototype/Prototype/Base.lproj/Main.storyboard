@@ -114,6 +114,9 @@
                     <navigationItem key="navigationItem" title="My Feed" largeTitleDisplayMode="never" id="ye3-Yq-ich"/>
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="lNm-Dd-XHi">
                         <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <action selector="loadFeed" destination="0hL-QZ-3hb" eventType="valueChanged" id="8XE-Rs-MNw"/>
+                        </connections>
                     </refreshControl>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ucc-s8-yPo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

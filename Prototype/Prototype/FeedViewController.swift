@@ -12,9 +12,15 @@ class FeedViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .seconds(2))) {
-            self.feed = FeedViewModel.prototype
-            self.tableView.reloadData()
+        loadFeed()
+    }
+
+    @IBAction private func loadFeed() {
+        refreshControl?.beginRefreshing()
+        DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .seconds(2))) { [weak self] in
+            self?.feed = FeedViewModel.prototype
+            self?.tableView.reloadData()
+            self?.refreshControl?.endRefreshing()
         }
     }
 
