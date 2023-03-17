@@ -244,6 +244,24 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.cancelLoadingURLs, [url0, url1])
     }
 
+    func test_feedImageView_loadsImageURLJustBeforeDisplaying() {
+        let url0 = URL(string: "https://image0.com")!
+        let url1 = URL(string: "https://image1.com")!
+        let image0 = makeFeedImage(url: url0)
+        let image1 = makeFeedImage(url: url1)
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        loader.completeLoading(with: [image0, image1], at: 0)
+        XCTAssertEqual(loader.loadImageURLs, [])
+
+        sut.simulateFeedImageJustBeforeDisplaying(at: 0)
+        XCTAssertEqual(loader.loadImageURLs, [url0])
+
+        sut.simulateFeedImageJustBeforeDisplaying(at: 1)
+        XCTAssertEqual(loader.loadImageURLs, [url0, url1])
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FeedViewController, loader: FeedLoaderSpy) {
@@ -385,6 +403,11 @@ private extension UITableViewController {
     func simulateFeedImageNotVisible(at index: Int) {
         let cell = feedImageView(at: index)
         tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: IndexPath(row: index, section: feedSection))
+    }
+
+    func simulateFeedImageJustBeforeDisplaying(at index: Int) {
+        let cell = FeedImageCell()
+        tableView.delegate?.tableView?(tableView, willDisplay: cell, forRowAt: IndexPath(row: index, section: feedSection))
     }
 
     func simulateFeedImageNearVisible(at index: Int) {

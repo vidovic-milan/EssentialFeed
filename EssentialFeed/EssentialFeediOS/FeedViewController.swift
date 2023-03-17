@@ -70,6 +70,19 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
         return cell
     }
 
+    public override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let cell = cell as? FeedImageCell else { return }
+        let model = feed[indexPath.row]
+        let task = imageLoader?.loadImage(from: model.url) { [weak cell] result in
+            let imageData = try? result.get()
+            let image = imageData.map(UIImage.init) ?? nil
+            cell?.retryButton.isHidden = image != nil
+            cell?.feedImageView.image = image
+            cell?.feedImageContainer.stopShimmering()
+        }
+        loadTasks[indexPath] = task
+    }
+
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         loadTasks[indexPath]?.cancel()
     }
