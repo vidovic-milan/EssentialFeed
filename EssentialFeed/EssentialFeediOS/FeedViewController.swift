@@ -6,7 +6,8 @@ public protocol FeedImageLoaderDataTask {
 }
 
 public protocol FeedImageLoader {
-    func loadImage(from url: URL) -> FeedImageLoaderDataTask
+    typealias Result = Swift.Result<Data, Error>
+    func loadImage(from url: URL, completion: @escaping (Result) -> Void) -> FeedImageLoaderDataTask
 }
 
 public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
@@ -51,7 +52,9 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
         cell.descriptionLabel.text = model.description
         cell.locationContainer.isHidden = model.location == nil
         cell.feedImageContainer.startShimmering()
-        let task = imageLoader?.loadImage(from: model.url)
+        let task = imageLoader?.loadImage(from: model.url) { [weak cell] _ in
+            cell?.feedImageContainer.stopShimmering()
+        }
         loadTasks[indexPath] = task
         return cell
     }
@@ -63,7 +66,7 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
             let model = feed[indexPath.row]
-            let task = imageLoader?.loadImage(from: model.url)
+            let task = imageLoader?.loadImage(from: model.url, completion: { _ in })
             loadTasks[indexPath] = task
         }
     }
