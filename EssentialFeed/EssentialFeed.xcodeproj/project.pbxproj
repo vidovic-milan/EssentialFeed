@@ -369,7 +369,6 @@
 		BEA142D229C454B9000E20DD /* EssentialFeediOS */ = {
 			isa = PBXGroup;
 			children = (
-				BEA142E829C48E33000E20DD /* FeedViewControllerTests.swift */,
 			);
 			path = EssentialFeediOS;
 			sourceTree = "<group>";
@@ -377,6 +376,7 @@
 		BEA142DC29C454BA000E20DD /* EssentialFeediOSTests */ = {
 			isa = PBXGroup;
 			children = (
+				BEA142E829C48E33000E20DD /* FeedViewControllerTests.swift */,
 			);
 			path = EssentialFeediOSTests;
 			sourceTree = "<group>";
