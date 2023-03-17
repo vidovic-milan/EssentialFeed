@@ -1,14 +1,18 @@
 import UIKit
 import EssentialFeed
 
+public protocol FeedImageLoaderDataTask {
+    func cancel()
+}
+
 public protocol FeedImageLoader {
-    func loadImage(from url: URL)
-    func cancelLoading(from url: URL)
+    func loadImage(from url: URL) -> FeedImageLoaderDataTask
 }
 
 public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
     private var feedLoader: FeedLoader?
     private var imageLoader: FeedImageLoader?
+    private var loadTasks = [IndexPath: FeedImageLoaderDataTask]()
     private var feed = [FeedImage]()
 
     convenience public init(feedLoader: FeedLoader, imageLoader: FeedImageLoader) {
@@ -46,19 +50,22 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
         cell.locationLabel.text = model.location
         cell.descriptionLabel.text = model.description
         cell.locationContainer.isHidden = model.location == nil
-        imageLoader?.loadImage(from: model.url)
+        let task = imageLoader?.loadImage(from: model.url)
+        loadTasks[indexPath] = task
         return cell
     }
 
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            imageLoader?.loadImage(from: feed[indexPath.row].url)
+            let model = feed[indexPath.row]
+            let task = imageLoader?.loadImage(from: model.url)
+            loadTasks[indexPath] = task
         }
     }
 
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
         indexPaths.forEach { indexPath in
-            imageLoader?.cancelLoading(from: feed[indexPath.row].url)
+            loadTasks[indexPath]?.cancel()
         }
     }
 }

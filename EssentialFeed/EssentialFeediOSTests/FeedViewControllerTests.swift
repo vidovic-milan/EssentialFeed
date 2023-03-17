@@ -116,10 +116,10 @@ class FeedViewControllerTests: XCTestCase {
 
         XCTAssertEqual(loader.loadImageURLs, [])
 
-        sut.simulateFeedImageNotVisible(at: 0)
+        sut.simulateFeedImageLoadingCancels(at: 0)
         XCTAssertEqual(loader.cancelLoadingURLs, [url0])
 
-        sut.simulateFeedImageNotVisible(at: 1)
+        sut.simulateFeedImageLoadingCancels(at: 1)
         XCTAssertEqual(loader.cancelLoadingURLs, [url0, url1])
     }
 
@@ -177,13 +177,24 @@ class FeedViewControllerTests: XCTestCase {
         // MARK: - FeedImageLoader
 
         var loadImageURLs: [URL] = []
-        var cancelLoadingURLs: [URL] = []
-        func loadImage(from url: URL) {
+        private var loadTasks: [(url: URL, task: TaskStub)] = []
+        @discardableResult
+        func loadImage(from url: URL) -> FeedImageLoaderDataTask {
+            let task = TaskStub()
+            loadTasks.append((url, task))
             loadImageURLs.append(url)
+            return task
         }
 
-        func cancelLoading(from url: URL) {
-            cancelLoadingURLs.append(url)
+        private class TaskStub: FeedImageLoaderDataTask {
+            var cancelLoadingCallCount = 0
+            func cancel() {
+                cancelLoadingCallCount += 1
+            }
+        }
+
+        var cancelLoadingURLs: [URL] {
+            loadTasks.filter { $0.task.cancelLoadingCallCount > 0 }.map { $0.url }
         }
     }
 }
@@ -227,7 +238,8 @@ private extension UITableViewController {
         tableView.prefetchDataSource?.tableView(tableView, prefetchRowsAt: [IndexPath(row: index, section: feedSection)])
     }
 
-    func simulateFeedImageNotVisible(at index: Int) {
+    func simulateFeedImageLoadingCancels(at index: Int) {
+        simulateFeedImageVisible(at: index)
         tableView.prefetchDataSource?.tableView?(tableView, cancelPrefetchingForRowsAt: [IndexPath(row: index, section: feedSection)])
     }
 
