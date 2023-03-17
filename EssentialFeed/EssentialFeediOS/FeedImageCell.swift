@@ -6,6 +6,7 @@ public class FeedImageCell: UITableViewCell {
     public let locationContainer = UIStackView()
     public let feedImageContainer = UIView()
     public let feedImageView = UIImageView()
+    public let retryButton = UIButton()
 }
 
 extension UIView {
