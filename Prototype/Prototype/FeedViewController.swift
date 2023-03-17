@@ -8,7 +8,15 @@ struct FeedViewModel {
 
 class FeedViewController: UITableViewController {
 
-    let feed = FeedViewModel.prototype
+    private var feed = [FeedViewModel]()
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .seconds(2))) {
+            self.feed = FeedViewModel.prototype
+            self.tableView.reloadData()
+        }
+    }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return feed.count
