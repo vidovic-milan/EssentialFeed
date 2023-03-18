@@ -5,24 +5,20 @@ final class FeedViewModel {
     typealias Observer<T> = (T) -> Void
     private let feedLoader: FeedLoader
 
-    var onChange: Observer<FeedViewModel>?
+    var onLoadingStateChange: Observer<Bool>?
     var onLoad: Observer<[FeedImage]>?
-
-    private(set) var isLoading: Bool = false {
-        didSet { onChange?(self) }
-    }
 
     init(feedLoader: FeedLoader) {
         self.feedLoader = feedLoader
     }
 
     func loadFeed() {
-        isLoading = true
+        onLoadingStateChange?(true)
         feedLoader.load { [weak self] result in
             if let feed = try? result.get() {
                 self?.onLoad?(feed)
             }
-            self?.isLoading = false
+            self?.onLoadingStateChange?(false)
         }
     }
 }
@@ -41,8 +37,8 @@ final class FeedRefreshViewController: NSObject {
     }
 
     private func binded(_ refreshControl: UIRefreshControl) -> UIRefreshControl {
-        feedViewModel.onChange = { [weak refreshControl] viewModel in
-            if viewModel.isLoading {
+        feedViewModel.onLoadingStateChange = { [weak refreshControl] isLoading in
+            if isLoading {
                 refreshControl?.beginRefreshing()
             } else {
                 refreshControl?.endRefreshing()
