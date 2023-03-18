@@ -41,7 +41,7 @@ final class FeedCellViewController {
         loadTask = task
     }
 
-    deinit {
+    func cancel() {
         loadTask?.cancel()
         loadTask = nil
     }
@@ -84,7 +84,7 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     }
 
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        removeCellController(at: indexPath)
+        cancelLoadingCell(at: indexPath)
     }
 
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
@@ -92,11 +92,11 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     }
 
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
-        indexPaths.forEach { removeCellController(at: $0) }
+        indexPaths.forEach { cancelLoadingCell(at: $0) }
     }
 
-    private func removeCellController(at indexPath: IndexPath) {
-        feedCellViewControllers[indexPath] = nil
+    private func cancelLoadingCell(at indexPath: IndexPath) {
+        feedCellViewControllers[indexPath]?.cancel()
     }
 
     private func loadCellController(at indexPath: IndexPath) -> FeedCellViewController {
