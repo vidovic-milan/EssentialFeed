@@ -1,32 +1,26 @@
 import UIKit
-import EssentialFeed
 
 public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
-    private var imageLoader: FeedImageDataLoader?
     private var feedRefreshController: FeedRefreshViewController?
-    private var feedImageCellControllers = [IndexPath: FeedImageCellController]()
-    private var feed = [FeedImage]() {
+
+    var cellControllers = [FeedImageCellController]() {
         didSet { tableView.reloadData() }
     }
 
-    convenience public init(feedLoader: FeedLoader, imageLoader: FeedImageDataLoader) {
+    convenience init(feedRefreshController: FeedRefreshViewController) {
         self.init()
-        self.feedRefreshController = FeedRefreshViewController(feedLoader: feedLoader)
-        self.imageLoader = imageLoader
+        self.feedRefreshController = feedRefreshController
     }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
         refreshControl = feedRefreshController?.refreshControl
         tableView.prefetchDataSource = self
-        feedRefreshController?.onRefresh = { [weak self] feed in
-            self?.feed = feed
-        }
         feedRefreshController?.refresh()
     }
 
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return feed.count
+        return cellControllers.count
     }
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -50,14 +44,10 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     }
 
     private func cancelLoadingCell(at indexPath: IndexPath) {
-        feedImageCellControllers[indexPath]?.cancel()
+        cellControllers[indexPath.row].cancel()
     }
 
     private func loadCellController(at indexPath: IndexPath) -> FeedImageCellController {
-        let model = feed[indexPath.row]
-        let cellController = FeedImageCellController(model: model, imageLoader: imageLoader!)
-        feedImageCellControllers[indexPath] = cellController
-
-        return cellController
+        return cellControllers[indexPath.row]
     }
 }
