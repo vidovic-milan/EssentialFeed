@@ -1,22 +1,13 @@
 import UIKit
 import EssentialFeed
 
-public protocol FeedImageLoaderDataTask {
-    func cancel()
-}
-
-public protocol FeedImageLoader {
-    typealias Result = Swift.Result<Data, Error>
-    func loadImage(from url: URL, completion: @escaping (Result) -> Void) -> FeedImageLoaderDataTask
-}
-
 public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
     private var feedLoader: FeedLoader?
-    private var imageLoader: FeedImageLoader?
+    private var imageLoader: FeedImageDataLoader?
     private var loadTasks = [IndexPath: FeedImageLoaderDataTask]()
     private var feed = [FeedImage]()
 
-    convenience public init(feedLoader: FeedLoader, imageLoader: FeedImageLoader) {
+    convenience public init(feedLoader: FeedLoader, imageLoader: FeedImageDataLoader) {
         self.init()
         self.feedLoader = feedLoader
         self.imageLoader = imageLoader
