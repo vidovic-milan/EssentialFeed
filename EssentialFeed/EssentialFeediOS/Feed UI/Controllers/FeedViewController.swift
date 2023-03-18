@@ -1,7 +1,7 @@
 import UIKit
 import EssentialFeed
 
-final class FeedCellViewController {
+final class FeedImageCellController {
     private var loadTask: FeedImageLoaderDataTask?
     private let model: FeedImage
     private let imageLoader: FeedImageDataLoader
@@ -50,7 +50,7 @@ final class FeedCellViewController {
 public final class FeedViewController: UITableViewController, UITableViewDataSourcePrefetching {
     private var imageLoader: FeedImageDataLoader?
     private var feedRefreshController: FeedRefreshViewController?
-    private var feedCellViewControllers = [IndexPath: FeedCellViewController]()
+    private var feedImageCellControllers = [IndexPath: FeedImageCellController]()
     private var feed = [FeedImage]() {
         didSet { tableView.reloadData() }
     }
@@ -96,13 +96,13 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     }
 
     private func cancelLoadingCell(at indexPath: IndexPath) {
-        feedCellViewControllers[indexPath]?.cancel()
+        feedImageCellControllers[indexPath]?.cancel()
     }
 
-    private func loadCellController(at indexPath: IndexPath) -> FeedCellViewController {
+    private func loadCellController(at indexPath: IndexPath) -> FeedImageCellController {
         let model = feed[indexPath.row]
-        let cellController = FeedCellViewController(model: model, imageLoader: imageLoader!)
-        feedCellViewControllers[indexPath] = cellController
+        let cellController = FeedImageCellController(model: model, imageLoader: imageLoader!)
+        feedImageCellControllers[indexPath] = cellController
 
         return cellController
     }
