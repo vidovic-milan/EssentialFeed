@@ -1,4 +1,3 @@
-import EssentialFeed
 import UIKit
 
 final class FeedImageCellController {
