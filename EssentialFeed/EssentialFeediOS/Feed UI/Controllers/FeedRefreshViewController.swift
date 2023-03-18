@@ -2,44 +2,27 @@ import EssentialFeed
 import UIKit
 
 final class FeedViewModel {
-    private enum State {
-        case pending
-        case loading
-        case loaded(feed: [FeedImage])
-        case failed
-    }
+    typealias Observer<T> = (T) -> Void
+    private let feedLoader: FeedLoader
 
-    private var state: State = .pending {
+    var onChange: Observer<FeedViewModel>?
+    var onLoad: Observer<[FeedImage]>?
+
+    private(set) var isLoading: Bool = false {
         didSet { onChange?(self) }
     }
-    private let feedLoader: FeedLoader
 
     init(feedLoader: FeedLoader) {
         self.feedLoader = feedLoader
     }
 
-    var onChange: ((FeedViewModel) -> Void)?
-    var isLoading: Bool {
-        switch state {
-        case .loading: return true
-        case .loaded, .failed, .pending: return false
-        }
-    }
-    var feed: [FeedImage]? {
-        switch state {
-        case .loaded(let feed): return feed
-        case .loading, .failed, .pending: return nil
-        }
-    }
-
     func loadFeed() {
-        state = .loading
+        isLoading = true
         feedLoader.load { [weak self] result in
             if let feed = try? result.get() {
-                self?.state = .loaded(feed: feed)
-            } else {
-                self?.state = .failed
+                self?.onLoad?(feed)
             }
+            self?.isLoading = false
         }
     }
 }
@@ -47,30 +30,25 @@ final class FeedViewModel {
 final class FeedRefreshViewController: NSObject {
     private let feedViewModel: FeedViewModel
 
-    private(set) lazy var refreshControl = {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
-        return refreshControl
-    }()
+    private(set) lazy var refreshControl = binded(UIRefreshControl())
 
-    var onRefresh: (([FeedImage]) -> Void)?
-
-    init(feedLoader: FeedLoader) {
-        self.feedViewModel = FeedViewModel(feedLoader: feedLoader)
+    init(feedViewModel: FeedViewModel) {
+        self.feedViewModel = feedViewModel
     }
 
     @objc func refresh() {
-        feedViewModel.onChange = { [weak self] viewModel in
+        feedViewModel.loadFeed()
+    }
+
+    private func binded(_ refreshControl: UIRefreshControl) -> UIRefreshControl {
+        feedViewModel.onChange = { [weak refreshControl] viewModel in
             if viewModel.isLoading {
-                self?.refreshControl.beginRefreshing()
+                refreshControl?.beginRefreshing()
             } else {
-                self?.refreshControl.endRefreshing()
-            }
-            
-            if let feed = viewModel.feed {
-                self?.onRefresh?(feed)
+                refreshControl?.endRefreshing()
             }
         }
-        feedViewModel.loadFeed()
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        return refreshControl
     }
 }
