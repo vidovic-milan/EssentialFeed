@@ -3,6 +3,7 @@ import EssentialFeed
 
 final class FeedImageViewModel<Image> {
     typealias Observer<T> = (T) -> Void
+
     private var loadTask: FeedImageLoaderDataTask?
     private let model: FeedImage
     private let imageLoader: FeedImageDataLoader
@@ -26,14 +27,26 @@ final class FeedImageViewModel<Image> {
         return model.location == nil
     }
 
-    var onLoadedImage: Observer<Image?>?
+    var onLoadedImage: Observer<Image>?
+    var onShouldRetryChange: Observer<Bool>?
+    var onLoadingChange: Observer<Bool>?
+
     func loadImage() {
-        let transformImage = self.transformImage
+        onShouldRetryChange?(false)
+        onLoadingChange?(true)
         loadTask = imageLoader.loadImage(from: model.url) { [weak self] result in
-            let imageData = try? result.get()
-            let image = imageData.map(transformImage) ?? nil
-            self?.onLoadedImage?(image)
+            self?.handleResult(result)
         }
+    }
+
+    private func handleResult(_ result: Result<Data, Error>) {
+        let imageData = (try? result.get()).flatMap(transformImage)
+        if let image = imageData {
+            onLoadedImage?(image)
+        } else {
+            onShouldRetryChange?(true)
+        }
+        onLoadingChange?(false)
     }
 
     func preload() {

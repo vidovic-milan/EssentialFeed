@@ -8,21 +8,7 @@ final class FeedImageCellController {
     }
 
     func view() -> FeedImageCell {
-        let cell = FeedImageCell()
-        cell.locationLabel.text = viewModel.location
-        cell.descriptionLabel.text = viewModel.description
-        cell.locationContainer.isHidden = viewModel.isLocationHidden
-        cell.retryButton.isHidden = true
-        cell.feedImageView.image = nil
-        cell.feedImageContainer.startShimmering()
-        viewModel.onLoadedImage = { [weak cell] image in
-            cell?.retryButton.isHidden = image != nil
-            cell?.feedImageView.image = image
-            cell?.feedImageContainer.stopShimmering()
-        }
-        cell.onRetry = { [weak viewModel] in
-            viewModel?.loadImage()
-        }
+        let cell = binded(FeedImageCell())
         viewModel.loadImage()
 
         return cell
@@ -34,5 +20,33 @@ final class FeedImageCellController {
 
     func cancel() {
         viewModel.cancel()
+    }
+
+    private func binded(_ cell: FeedImageCell) -> FeedImageCell {
+        cell.locationLabel.text = viewModel.location
+        cell.descriptionLabel.text = viewModel.description
+        cell.locationContainer.isHidden = viewModel.isLocationHidden
+
+        viewModel.onLoadedImage = { [weak cell] image in
+            cell?.feedImageView.image = image
+        }
+
+        viewModel.onShouldRetryChange = { [weak cell] shouldRetry in
+            cell?.retryButton.isHidden = !shouldRetry
+        }
+
+        viewModel.onLoadingChange = { [weak cell] isLoading in
+            if isLoading {
+                cell?.feedImageContainer.startShimmering()
+            } else {
+                cell?.feedImageContainer.stopShimmering()
+            }
+        }
+
+        cell.onRetry = { [weak viewModel] in
+            viewModel?.loadImage()
+        }
+
+        return cell
     }
 }
