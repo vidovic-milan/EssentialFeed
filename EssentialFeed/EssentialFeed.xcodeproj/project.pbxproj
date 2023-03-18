@@ -387,7 +387,6 @@
 		BE4570A429C608E600614F16 /* Feed UI */ = {
 			isa = PBXGroup;
 			children = (
-				BE4570B329C64BAF00614F16 /* View Models */,
 				BE4570B229C61B7000614F16 /* Composers */,
 				BE4570A629C6090E00614F16 /* Controllers */,
 				BE4570A729C6091800614F16 /* Views */,
@@ -430,18 +429,19 @@
 			path = Composers;
 			sourceTree = "<group>";
 		};
-		BE4570B329C64BAF00614F16 /* View Models */ = {
+		BE4570B829C655CE00614F16 /* Feed Presentation */ = {
 			isa = PBXGroup;
 			children = (
 				BE4570B429C64BBA00614F16 /* FeedViewModel.swift */,
 				BE4570B629C64F9400614F16 /* FeedImageViewModel.swift */,
 			);
-			path = "View Models";
+			path = "Feed Presentation";
 			sourceTree = "<group>";
 		};
 		BEA142D229C454B9000E20DD /* EssentialFeediOS */ = {
 			isa = PBXGroup;
 			children = (
+				BE4570B829C655CE00614F16 /* Feed Presentation */,
 				BE4570A529C608F600614F16 /* Feed Image Loader */,
 				BE4570A429C608E600614F16 /* Feed UI */,
 			);
