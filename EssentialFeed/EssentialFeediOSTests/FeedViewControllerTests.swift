@@ -373,7 +373,7 @@ private extension FeedImageCell {
     func retryButtonTap() {
         retryButton.allTargets.forEach { target in
             retryButton.actions(forTarget: target, forControlEvent: .touchUpInside)?.forEach { action in
-                (self as NSObject).perform(Selector(action))
+                (target as NSObject).perform(Selector(action))
             }
         }
     }
@@ -420,9 +420,15 @@ private extension UITableViewController {
     }
 
     func simulateUserInitiatedFeedLoad() {
-        refreshControl?.allTargets.forEach { target in
-            refreshControl?.actions(forTarget: target, forControlEvent: .valueChanged)?.forEach { action in
-                (self as NSObject).perform(Selector(action))
+        refreshControl?.simulatePullToRefresh()
+    }
+}
+
+private extension UIRefreshControl {
+    func simulatePullToRefresh() {
+        allTargets.forEach { target in
+            actions(forTarget: target, forControlEvent: .valueChanged)?.forEach { action in
+                (target as NSObject).perform(Selector(action))
             }
         }
     }
