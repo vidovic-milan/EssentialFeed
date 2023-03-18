@@ -36,6 +36,11 @@ final class FeedCellViewController {
         return cell
     }
 
+    func preload() {
+        let task = imageLoader.loadImage(from: model.url) { _ in }
+        loadTask = task
+    }
+
     deinit {
         loadTask?.cancel()
         loadTask = nil
@@ -75,7 +80,7 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     }
 
     public override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        _ = loadCellController(at: indexPath).view()
+        loadCellController(at: indexPath).preload()
     }
 
     public override func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -83,7 +88,7 @@ public final class FeedViewController: UITableViewController, UITableViewDataSou
     }
 
     public func tableView(_ tableView: UITableView, prefetchRowsAt indexPaths: [IndexPath]) {
-        indexPaths.forEach { _ = loadCellController(at: $0).view() }
+        indexPaths.forEach { loadCellController(at: $0).preload() }
     }
 
     public func tableView(_ tableView: UITableView, cancelPrefetchingForRowsAt indexPaths: [IndexPath]) {
