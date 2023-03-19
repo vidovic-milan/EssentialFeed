@@ -28,6 +28,12 @@ extension WeakReferenceBox: FeedLoadingView where T: FeedLoadingView {
     }
 }
 
+extension WeakReferenceBox: FeedImageView where T: FeedImageView, T.Image == UIImage {
+    func display(model: FeedImageViewModel<UIImage>) {
+        object?.display(model: model)
+    }
+}
+
 private class FeedAdapter: FeedView {
     private weak var controller: FeedViewController?
     private let imageLoader: FeedImageDataLoader
@@ -39,8 +45,10 @@ private class FeedAdapter: FeedView {
 
     func display(model: FeedViewModel) {
         controller?.cellControllers = model.feed.map { feedImage in
-            let feedImageViewModel = FeedImageViewModel(model: feedImage, imageLoader: imageLoader, transformImage: UIImage.init)
-            return FeedImageCellController(feedImageViewModel: feedImageViewModel)
+            let feedImagePresenter = FeedImagePresenter<UIImage, WeakReferenceBox<FeedImageCellController>>(model: feedImage, imageLoader: imageLoader, transformImage: UIImage.init)
+            let controller = FeedImageCellController(loadImage: feedImagePresenter.loadImage, preload: feedImagePresenter.preload, cancel: feedImagePresenter.cancel)
+            feedImagePresenter.feedImageView = WeakReferenceBox(object: controller)
+            return controller
         }
     }
 }
