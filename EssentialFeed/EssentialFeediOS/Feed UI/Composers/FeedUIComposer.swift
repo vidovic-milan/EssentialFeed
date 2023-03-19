@@ -87,7 +87,7 @@ private class FeedImagePresentationAdapter<Image, View: FeedImageView>: FeedImag
         self.imageLoader = imageLoader
     }
 
-    func didRequestImageLoading() {
+    func didRequestImage() {
         presenter?.didStartLoadingImage(for: model)
         loadTask = imageLoader.loadImage(from: model.url) { [weak self] result in
             self?.handleResult(result)
@@ -103,12 +103,7 @@ private class FeedImagePresentationAdapter<Image, View: FeedImageView>: FeedImag
         }
     }
 
-    func didRequestImagePreloading() {
-        let task = imageLoader.loadImage(from: model.url) { _ in }
-        loadTask = task
-    }
-
-    func didRequestImageLoadingCancellation() {
+    func didCancelImageRequest() {
         loadTask?.cancel()
         loadTask = nil
     }

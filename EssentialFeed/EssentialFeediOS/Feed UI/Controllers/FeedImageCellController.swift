@@ -1,14 +1,13 @@
 import UIKit
 
 protocol FeedImageCellControllerDelegate {
-    func didRequestImageLoading()
-    func didRequestImagePreloading()
-    func didRequestImageLoadingCancellation()
+    func didRequestImage()
+    func didCancelImageRequest()
 }
 
 final class FeedImageCellController: FeedImageView {
 
-    private weak var cell: FeedImageCell?
+    private lazy var cell = FeedImageCell()
     private let delegate: FeedImageCellControllerDelegate
 
     init(delegate: FeedImageCellControllerDelegate) {
@@ -16,34 +15,30 @@ final class FeedImageCellController: FeedImageView {
     }
 
     func view() -> FeedImageCell {
-        let cell = FeedImageCell()
-        self.cell = cell
-        delegate.didRequestImageLoading()
+        delegate.didRequestImage()
 
         return cell
     }
 
     func display(model: FeedImageViewModel<UIImage>) {
-        cell?.locationLabel.text = model.location
-        cell?.descriptionLabel.text = model.description
-        cell?.locationContainer.isHidden = model.isLocationHidden
-        cell?.feedImageView.image = model.loadedImage
-        cell?.retryButton.isHidden = !model.shouldRetry
+        cell.locationLabel.text = model.location
+        cell.descriptionLabel.text = model.description
+        cell.locationContainer.isHidden = model.isLocationHidden
+        cell.feedImageView.image = model.loadedImage
+        cell.retryButton.isHidden = !model.shouldRetry
         if model.isLoading {
-            cell?.feedImageContainer.startShimmering()
+            cell.feedImageContainer.startShimmering()
         } else {
-            cell?.feedImageContainer.stopShimmering()
+            cell.feedImageContainer.stopShimmering()
         }
-        cell?.onRetry = { [weak self] in
-            self?.delegate.didRequestImageLoading()
-        }
+        cell.onRetry = delegate.didRequestImage
     }
 
     func preload() {
-        delegate.didRequestImagePreloading()
+        delegate.didRequestImage()
     }
 
     func cancel() {
-        delegate.didRequestImageLoadingCancellation()
+        delegate.didCancelImageRequest()
     }
 }
