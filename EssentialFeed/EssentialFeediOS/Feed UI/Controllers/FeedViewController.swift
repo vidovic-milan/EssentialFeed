@@ -33,7 +33,7 @@ public final class FeedViewController: UITableViewController, FeedLoadingView, U
     }
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return loadCellController(at: indexPath).view()
+        return loadCellController(at: indexPath).view(in: tableView)
     }
 
     public override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

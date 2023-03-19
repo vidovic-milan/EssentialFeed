@@ -262,6 +262,20 @@ class FeedViewControllerTests: XCTestCase {
         XCTAssertEqual(loader.loadImageURLs, [url0, url1])
     }
 
+    func test_feedImageView_doesNotDisplayImageWhenViewIsNotVisibleAnymore() {
+        let url0 = URL(string: "https://image0.com")!
+        let image0 = makeFeedImage(url: url0)
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        loader.completeLoading(with: [image0], at: 0)
+
+        let view = sut.simulateFeedImageNotVisible(at: 0)
+        loader.completeLoadingImage(with: anyImageData(), at: 0)
+
+        XCTAssertNil(view?.renderedImage)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FeedViewController, loader: FeedLoaderSpy) {
@@ -274,6 +288,10 @@ class FeedViewControllerTests: XCTestCase {
 
     private func makeFeedImage(id: UUID = UUID(), description: String? = nil, location: String? = nil, url: URL = URL(string: "https://a-url.com")!) -> FeedImage {
         return FeedImage(id: id, description: description, location: location, url: url)
+    }
+
+    private func anyImageData() -> Data {
+        return UIImage.make(from: .red).pngData()!
     }
 
     private func assertThat(_ sut: FeedViewController, hasDisplayed feed: [FeedImage], file: StaticString = #file, line: UInt = #line) {
@@ -400,9 +418,11 @@ private extension UITableViewController {
         _ = feedImageView(at: index)
     }
 
-    func simulateFeedImageNotVisible(at index: Int) {
+    @discardableResult
+    func simulateFeedImageNotVisible(at index: Int) -> FeedImageCell? {
         let cell = feedImageView(at: index)
         tableView.delegate?.tableView?(tableView, didEndDisplaying: cell!, forRowAt: IndexPath(row: index, section: feedSection))
+        return cell
     }
 
     func simulateFeedImageJustBeforeDisplaying(at index: Int) {

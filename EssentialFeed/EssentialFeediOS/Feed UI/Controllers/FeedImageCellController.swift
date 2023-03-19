@@ -7,31 +7,32 @@ protocol FeedImageCellControllerDelegate {
 
 final class FeedImageCellController: FeedImageView {
 
-    private lazy var cell = FeedImageCell()
+    private var cell: FeedImageCell?
     private let delegate: FeedImageCellControllerDelegate
 
     init(delegate: FeedImageCellControllerDelegate) {
         self.delegate = delegate
     }
 
-    func view() -> FeedImageCell {
+    func view(in tableView: UITableView) -> FeedImageCell {
+        cell = tableView.dequeueReusableCell(withIdentifier: "FeedImageCell") as? FeedImageCell
         delegate.didRequestImage()
 
-        return cell
+        return cell!
     }
 
     func display(model: FeedImageViewModel<UIImage>) {
-        cell.locationLabel.text = model.location
-        cell.descriptionLabel.text = model.description
-        cell.locationContainer.isHidden = model.isLocationHidden
-        cell.feedImageView.image = model.loadedImage
-        cell.retryButton.isHidden = !model.shouldRetry
+        cell?.locationLabel.text = model.location
+        cell?.descriptionLabel.text = model.description
+        cell?.locationContainer.isHidden = model.isLocationHidden
+        cell?.feedImageView.image = model.loadedImage
+        cell?.retryButton.isHidden = !model.shouldRetry
         if model.isLoading {
-            cell.feedImageContainer.startShimmering()
+            cell?.feedImageContainer.startShimmering()
         } else {
-            cell.feedImageContainer.stopShimmering()
+            cell?.feedImageContainer.stopShimmering()
         }
-        cell.onRetry = delegate.didRequestImage
+        cell?.onRetry = delegate.didRequestImage
     }
 
     func preload() {
@@ -39,6 +40,7 @@ final class FeedImageCellController: FeedImageView {
     }
 
     func cancel() {
+        cell = nil
         delegate.didCancelImageRequest()
     }
 }
