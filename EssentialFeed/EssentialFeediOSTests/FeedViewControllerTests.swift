@@ -9,7 +9,10 @@ class FeedViewControllerTests: XCTestCase {
 
         sut.loadViewIfNeeded()
 
-        XCTAssertEqual(sut.title, "My Feed")
+        let bundle = Bundle(for: FeedViewController.self)
+        let value = bundle.localizedString(forKey: "FEED_VIEW_TITLE", value: nil, table: nil)
+
+        XCTAssertEqual(sut.title, value)
     }
 
     func test_loadFeedAction_requestsFeedFromLoader() {
