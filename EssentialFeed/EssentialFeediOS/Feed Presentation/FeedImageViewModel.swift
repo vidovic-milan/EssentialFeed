@@ -1,6 +1,6 @@
 import Foundation
 
-struct FeedImageViewMode<Image> {
+struct FeedImageViewModel<Image> {
     let location: String?
     let description: String?
     let isLocationHidden: Bool
