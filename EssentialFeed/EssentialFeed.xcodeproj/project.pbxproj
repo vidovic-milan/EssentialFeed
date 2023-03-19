@@ -363,6 +363,15 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		BE04ED7529C7A48700CD2009 /* Feed UI */ = {
+			isa = PBXGroup;
+			children = (
+				BE04ED6E29C7A29500CD2009 /* Helpers */,
+				BEA142E829C48E33000E20DD /* FeedUIIntegrationTests.swift */,
+			);
+			path = "Feed UI";
+			sourceTree = "<group>";
+		};
 		BE0EB17929C0DF5500334314 /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
@@ -483,8 +492,7 @@
 		BEA142DC29C454BA000E20DD /* EssentialFeediOSTests */ = {
 			isa = PBXGroup;
 			children = (
-				BE04ED6E29C7A29500CD2009 /* Helpers */,
-				BEA142E829C48E33000E20DD /* FeedUIIntegrationTests.swift */,
+				BE04ED7529C7A48700CD2009 /* Feed UI */,
 			);
 			path = EssentialFeediOSTests;
 			sourceTree = "<group>";
