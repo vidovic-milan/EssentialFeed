@@ -64,12 +64,24 @@
                                                                 <constraint firstAttribute="width" secondItem="1HI-O8-BCu" secondAttribute="height" multiplier="1:1" id="Ure-1x-jYo"/>
                                                             </constraints>
                                                         </imageView>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7it-CL-7QT">
+                                                            <rect key="frame" x="0.0" y="0.0" width="361" height="361"/>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="60"/>
+                                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                            <state key="normal" title="↻">
+                                                                <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            </state>
+                                                        </button>
                                                     </subviews>
                                                     <color key="backgroundColor" systemColor="systemGray6Color"/>
                                                     <constraints>
                                                         <constraint firstItem="1HI-O8-BCu" firstAttribute="top" secondItem="hKQ-mA-i1b" secondAttribute="top" id="1j2-lg-ZMW"/>
+                                                        <constraint firstItem="7it-CL-7QT" firstAttribute="top" secondItem="hKQ-mA-i1b" secondAttribute="top" id="5gM-DF-ufT"/>
                                                         <constraint firstAttribute="trailing" secondItem="1HI-O8-BCu" secondAttribute="trailing" id="Kd3-ux-pZI"/>
                                                         <constraint firstItem="1HI-O8-BCu" firstAttribute="leading" secondItem="hKQ-mA-i1b" secondAttribute="leading" id="T13-CO-Mks"/>
+                                                        <constraint firstAttribute="bottom" secondItem="7it-CL-7QT" secondAttribute="bottom" id="YNH-7w-h67"/>
+                                                        <constraint firstAttribute="trailing" secondItem="7it-CL-7QT" secondAttribute="trailing" id="bR3-by-yMD"/>
+                                                        <constraint firstItem="7it-CL-7QT" firstAttribute="leading" secondItem="hKQ-mA-i1b" secondAttribute="leading" id="nHI-c1-m9c"/>
                                                         <constraint firstAttribute="bottom" secondItem="1HI-O8-BCu" secondAttribute="bottom" id="sJA-BT-SY2"/>
                                                     </constraints>
                                                     <userDefinedRuntimeAttributes>
