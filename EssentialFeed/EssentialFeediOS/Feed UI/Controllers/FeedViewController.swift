@@ -14,7 +14,6 @@ public final class FeedViewController: UITableViewController, FeedLoadingView, U
     public override func viewDidLoad() {
         super.viewDidLoad()
         delegate?.didRequestFeedRefresh()
-        title = FeedPresenter.title
     }
 
     @IBAction private func refresh() {
