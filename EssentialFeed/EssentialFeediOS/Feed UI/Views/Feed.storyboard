@@ -120,9 +120,20 @@
                     <refreshControl key="refreshControl" opaque="NO" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="Wyj-Am-DIo">
                         <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <connections>
+                            <action selector="refresh" destination="gDQ-pv-jEC" eventType="valueChanged" id="9W6-vu-KiO"/>
+                        </connections>
                     </refreshControl>
+                    <connections>
+                        <outlet property="feedRefreshController" destination="gDQ-pv-jEC" id="eyj-5Q-UxN"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f4z-2L-YPp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <customObject id="gDQ-pv-jEC" customClass="FeedRefreshViewController" customModule="EssentialFeediOS" customModuleProvider="target">
+                    <connections>
+                        <outlet property="refreshControl" destination="Wyj-Am-DIo" id="sEh-JG-yDy"/>
+                    </connections>
+                </customObject>
             </objects>
             <point key="canvasLocation" x="886.25954198473278" y="-132.3943661971831"/>
         </scene>
