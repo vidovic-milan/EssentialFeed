@@ -45,11 +45,11 @@ private class FeedAdapter: FeedView {
 
     func display(model: FeedViewModel) {
         controller?.cellControllers = model.feed.map { feedImage in
-            let feedImageAdapter = FeedImagePresentationAdapter<UIImage, WeakReferenceBox<FeedImageCellController>>(model: feedImage, imageLoader: imageLoader)
-            let controller = FeedImageCellController(delegate: feedImageAdapter)
-            let feedImagePresenter = FeedImagePresenter(feedImageView: WeakReferenceBox(object: controller), transformImage: UIImage.init)
-            feedImageAdapter.presenter = feedImagePresenter
-            return controller
+            let adapter = FeedImagePresentationAdapter<UIImage, WeakReferenceBox<FeedImageCellController>>(model: feedImage, imageLoader: imageLoader)
+            let view = FeedImageCellController(delegate: adapter)
+            let presenter = FeedImagePresenter(feedImageView: WeakReferenceBox(object: view), transformImage: UIImage.init)
+            adapter.presenter = presenter
+            return view
         }
     }
 }
