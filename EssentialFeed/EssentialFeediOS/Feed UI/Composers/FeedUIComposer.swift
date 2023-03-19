@@ -45,8 +45,9 @@ private class FeedAdapter: FeedView {
 
     func display(model: FeedViewModel) {
         controller?.cellControllers = model.feed.map { feedImage in
-            let feedImagePresenter = FeedImagePresenter<UIImage, WeakReferenceBox<FeedImageCellController>>(model: feedImage, imageLoader: imageLoader, transformImage: UIImage.init)
-            let controller = FeedImageCellController(loadImage: feedImagePresenter.loadImage, preload: feedImagePresenter.preload, cancel: feedImagePresenter.cancel)
+            let feedImagePresenter = FeedImagePresenter<UIImage, WeakReferenceBox<FeedImageCellController>>(transformImage: UIImage.init)
+            let feedImageAdapter = FeedImagePresentationAdapter(model: feedImage, presenter: feedImagePresenter, imageLoader: imageLoader)
+            let controller = FeedImageCellController(loadImage: feedImageAdapter.loadImage, preload: feedImageAdapter.preload, cancel: feedImageAdapter.cancel)
             feedImagePresenter.feedImageView = WeakReferenceBox(object: controller)
             return controller
         }
@@ -71,5 +72,40 @@ private class FeedLoadingPresentationAdapter: FeedRefreshViewControllerDelegate 
                 self?.presenter?.didFailLoadingFeed(with: error)
             }
         }
+    }
+}
+
+private class FeedImagePresentationAdapter<Image, View: FeedImageView> where Image == View.Image {
+    private var loadTask: FeedImageLoaderDataTask?
+    private let model: FeedImage
+    private let presenter: FeedImagePresenter<Image, View>
+    private let imageLoader: FeedImageDataLoader
+
+    init(model: FeedImage, presenter: FeedImagePresenter<Image, View>, imageLoader: FeedImageDataLoader) {
+        self.model = model
+        self.presenter = presenter
+        self.imageLoader = imageLoader
+    }
+
+    func loadImage() {
+        presenter.didStartLoadingImage(for: model)
+        loadTask = imageLoader.loadImage(from: model.url) { [weak self] result in
+            self?.handleResult(result)
+        }
+    }
+
+    private func handleResult(_ result: Result<Data, Error>) {
+        let imageData = try? result.get()
+        presenter.didFinishLoading(with: imageData, for: model)
+    }
+
+    func preload() {
+        let task = imageLoader.loadImage(from: model.url) { _ in }
+        loadTask = task
+    }
+
+    func cancel() {
+        loadTask?.cancel()
+        loadTask = nil
     }
 }
