@@ -45,10 +45,10 @@ private class FeedAdapter: FeedView {
 
     func display(model: FeedViewModel) {
         controller?.cellControllers = model.feed.map { feedImage in
-            let feedImagePresenter = FeedImagePresenter<UIImage, WeakReferenceBox<FeedImageCellController>>(transformImage: UIImage.init)
-            let feedImageAdapter = FeedImagePresentationAdapter(model: feedImage, presenter: feedImagePresenter, imageLoader: imageLoader)
+            let feedImageAdapter = FeedImagePresentationAdapter<UIImage, WeakReferenceBox<FeedImageCellController>>(model: feedImage, imageLoader: imageLoader)
             let controller = FeedImageCellController(delegate: feedImageAdapter)
-            feedImagePresenter.feedImageView = WeakReferenceBox(object: controller)
+            let feedImagePresenter = FeedImagePresenter(feedImageView: WeakReferenceBox(object: controller), transformImage: UIImage.init)
+            feedImageAdapter.presenter = feedImagePresenter
             return controller
         }
     }
@@ -78,17 +78,17 @@ private class FeedLoadingPresentationAdapter: FeedRefreshViewControllerDelegate 
 private class FeedImagePresentationAdapter<Image, View: FeedImageView>: FeedImageCellControllerDelegate where Image == View.Image {
     private var loadTask: FeedImageLoaderDataTask?
     private let model: FeedImage
-    private let presenter: FeedImagePresenter<Image, View>
     private let imageLoader: FeedImageDataLoader
 
-    init(model: FeedImage, presenter: FeedImagePresenter<Image, View>, imageLoader: FeedImageDataLoader) {
+    var presenter: FeedImagePresenter<Image, View>?
+
+    init(model: FeedImage, imageLoader: FeedImageDataLoader) {
         self.model = model
-        self.presenter = presenter
         self.imageLoader = imageLoader
     }
 
     func didRequestImageLoading() {
-        presenter.didStartLoadingImage(for: model)
+        presenter?.didStartLoadingImage(for: model)
         loadTask = imageLoader.loadImage(from: model.url) { [weak self] result in
             self?.handleResult(result)
         }
@@ -96,7 +96,7 @@ private class FeedImagePresentationAdapter<Image, View: FeedImageView>: FeedImag
 
     private func handleResult(_ result: Result<Data, Error>) {
         let imageData = try? result.get()
-        presenter.didFinishLoading(with: imageData, for: model)
+        presenter?.didFinishLoading(with: imageData, for: model)
     }
 
     func didRequestImagePreloading() {

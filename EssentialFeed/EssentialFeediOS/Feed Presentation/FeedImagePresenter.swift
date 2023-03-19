@@ -18,11 +18,11 @@ protocol FeedImageView {
 
 final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.Image {
 
+    private let feedImageView: View
     private let transformImage: (Data) -> Image?
 
-    var feedImageView: View?
-
-    init(transformImage: @escaping (Data) -> Image?) {
+    init(feedImageView: View, transformImage: @escaping (Data) -> Image?) {
+        self.feedImageView = feedImageView
         self.transformImage = transformImage
     }
 
@@ -35,7 +35,7 @@ final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.I
             shouldRetry: false,
             isLoading: true
         )
-        feedImageView?.display(model: viewModel)
+        feedImageView.display(model: viewModel)
     }
 
     func didFinishLoading(with imageData: Data?, for model: FeedImage) {
@@ -48,6 +48,6 @@ final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.I
             shouldRetry: image == nil,
             isLoading: false
         )
-        feedImageView?.display(model: viewModel)
+        feedImageView.display(model: viewModel)
     }
 }
