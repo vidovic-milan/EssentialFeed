@@ -47,7 +47,7 @@ private class FeedAdapter: FeedView {
         controller?.cellControllers = model.feed.map { feedImage in
             let feedImagePresenter = FeedImagePresenter<UIImage, WeakReferenceBox<FeedImageCellController>>(transformImage: UIImage.init)
             let feedImageAdapter = FeedImagePresentationAdapter(model: feedImage, presenter: feedImagePresenter, imageLoader: imageLoader)
-            let controller = FeedImageCellController(loadImage: feedImageAdapter.loadImage, preload: feedImageAdapter.preload, cancel: feedImageAdapter.cancel)
+            let controller = FeedImageCellController(delegate: feedImageAdapter)
             feedImagePresenter.feedImageView = WeakReferenceBox(object: controller)
             return controller
         }
@@ -75,7 +75,7 @@ private class FeedLoadingPresentationAdapter: FeedRefreshViewControllerDelegate 
     }
 }
 
-private class FeedImagePresentationAdapter<Image, View: FeedImageView> where Image == View.Image {
+private class FeedImagePresentationAdapter<Image, View: FeedImageView>: FeedImageCellControllerDelegate where Image == View.Image {
     private var loadTask: FeedImageLoaderDataTask?
     private let model: FeedImage
     private let presenter: FeedImagePresenter<Image, View>
@@ -87,7 +87,7 @@ private class FeedImagePresentationAdapter<Image, View: FeedImageView> where Ima
         self.imageLoader = imageLoader
     }
 
-    func loadImage() {
+    func didRequestImageLoading() {
         presenter.didStartLoadingImage(for: model)
         loadTask = imageLoader.loadImage(from: model.url) { [weak self] result in
             self?.handleResult(result)
@@ -99,12 +99,12 @@ private class FeedImagePresentationAdapter<Image, View: FeedImageView> where Ima
         presenter.didFinishLoading(with: imageData, for: model)
     }
 
-    func preload() {
+    func didRequestImagePreloading() {
         let task = imageLoader.loadImage(from: model.url) { _ in }
         loadTask = task
     }
 
-    func cancel() {
+    func didRequestImageLoadingCancellation() {
         loadTask?.cancel()
         loadTask = nil
     }

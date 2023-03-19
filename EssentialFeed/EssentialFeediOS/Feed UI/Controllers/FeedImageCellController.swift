@@ -1,22 +1,24 @@
 import UIKit
 
+protocol FeedImageCellControllerDelegate {
+    func didRequestImageLoading()
+    func didRequestImagePreloading()
+    func didRequestImageLoadingCancellation()
+}
+
 final class FeedImageCellController: FeedImageView {
 
     private weak var cell: FeedImageCell?
-    private let loadImage: () -> Void
-    private let preloadImage: () -> Void
-    private let cancelImageLoading: () -> Void
+    private let delegate: FeedImageCellControllerDelegate
 
-    init(loadImage: @escaping () -> Void, preload: @escaping () -> Void, cancel: @escaping () -> Void) {
-        self.loadImage = loadImage
-        self.preloadImage = preload
-        self.cancelImageLoading = cancel
+    init(delegate: FeedImageCellControllerDelegate) {
+        self.delegate = delegate
     }
 
     func view() -> FeedImageCell {
         let cell = FeedImageCell()
         self.cell = cell
-        loadImage()
+        delegate.didRequestImageLoading()
 
         return cell
     }
@@ -33,15 +35,15 @@ final class FeedImageCellController: FeedImageView {
             cell?.feedImageContainer.stopShimmering()
         }
         cell?.onRetry = { [weak self] in
-            self?.loadImage()
+            self?.delegate.didRequestImageLoading()
         }
     }
 
     func preload() {
-        preloadImage()
+        delegate.didRequestImagePreloading()
     }
 
     func cancel() {
-        cancelImageLoading()
+        delegate.didRequestImageLoadingCancellation()
     }
 }
