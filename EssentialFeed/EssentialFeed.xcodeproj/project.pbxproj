@@ -41,6 +41,7 @@
 		BE04ED6429C7789300CD2009 /* Feed.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BE04ED6329C7789300CD2009 /* Feed.xcassets */; };
 		BE04ED6629C782C900CD2009 /* UITableView+Dequeue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE04ED6529C782C900CD2009 /* UITableView+Dequeue.swift */; };
 		BE04ED6829C784CC00CD2009 /* UIImageView+Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE04ED6729C784CC00CD2009 /* UIImageView+Image.swift */; };
+		BE04ED6D29C7A15E00CD2009 /* Feed.strings in Resources */ = {isa = PBXBuildFile; fileRef = BE04ED6C29C7A15E00CD2009 /* Feed.strings */; };
 		BE0EB17529C0DC1700334314 /* ManagedFeedStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0EB17429C0DC1700334314 /* ManagedFeedStoreTests.swift */; };
 		BE0EB17829C0DE9300334314 /* FeedStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BE0EB17629C0DE9300334314 /* FeedStore.xcdatamodeld */; };
 		BE0EB17F29C0DF7C00334314 /* ManagedCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0EB17B29C0DF7C00334314 /* ManagedCache.swift */; };
@@ -139,6 +140,7 @@
 		BE04ED6329C7789300CD2009 /* Feed.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Feed.xcassets; sourceTree = "<group>"; };
 		BE04ED6529C782C900CD2009 /* UITableView+Dequeue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Dequeue.swift"; sourceTree = "<group>"; };
 		BE04ED6729C784CC00CD2009 /* UIImageView+Image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Image.swift"; sourceTree = "<group>"; };
+		BE04ED6C29C7A15E00CD2009 /* Feed.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Feed.strings; sourceTree = "<group>"; };
 		BE0EB17429C0DC1700334314 /* ManagedFeedStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedFeedStoreTests.swift; sourceTree = "<group>"; };
 		BE0EB17729C0DE9300334314 /* FeedStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FeedStore.xcdatamodel; sourceTree = "<group>"; };
 		BE0EB17B29C0DF7C00334314 /* ManagedCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManagedCache.swift; sourceTree = "<group>"; };
@@ -452,6 +454,7 @@
 				BE04ED5D29C7280C00CD2009 /* FeedLoadingViewModel.swift */,
 				BE04ED5929C6FF4600CD2009 /* FeedPresenter.swift */,
 				BE04ED5F29C7281400CD2009 /* FeedViewModel.swift */,
+				BE04ED6C29C7A15E00CD2009 /* Feed.strings */,
 			);
 			path = "Feed Presentation";
 			sourceTree = "<group>";
@@ -695,6 +698,7 @@
 			files = (
 				BE04ED6229C7786400CD2009 /* Feed.storyboard in Resources */,
 				BE04ED6429C7789300CD2009 /* Feed.xcassets in Resources */,
+				BE04ED6D29C7A15E00CD2009 /* Feed.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
