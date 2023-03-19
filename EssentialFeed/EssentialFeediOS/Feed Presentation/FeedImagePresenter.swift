@@ -38,14 +38,31 @@ final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.I
         feedImageView.display(model: viewModel)
     }
 
-    func didFinishLoading(with imageData: Data?, for model: FeedImage) {
-        let image = imageData.flatMap(transformImage)
+    private struct InvalidImageDataError: Error {}
+
+    func didFinishLoading(with imageData: Data, for model: FeedImage) {
+        guard let image = transformImage(imageData) else {
+            return didFinishLoading(with: InvalidImageDataError(), for: model)
+        }
+
         let viewModel = FeedImageViewModel<Image>(
             location: model.location,
             description: model.description,
             isLocationHidden: model.location == nil,
             loadedImage: image,
-            shouldRetry: image == nil,
+            shouldRetry: false,
+            isLoading: false
+        )
+        feedImageView.display(model: viewModel)
+    }
+
+    func didFinishLoading(with error: Error, for model: FeedImage) {
+        let viewModel = FeedImageViewModel<Image>(
+            location: model.location,
+            description: model.description,
+            isLocationHidden: model.location == nil,
+            loadedImage: nil,
+            shouldRetry: true,
             isLoading: false
         )
         feedImageView.display(model: viewModel)

@@ -95,8 +95,12 @@ private class FeedImagePresentationAdapter<Image, View: FeedImageView>: FeedImag
     }
 
     private func handleResult(_ result: Result<Data, Error>) {
-        let imageData = try? result.get()
-        presenter?.didFinishLoading(with: imageData, for: model)
+        switch result {
+        case .success(let data):
+            presenter?.didFinishLoading(with: data, for: model)
+        case .failure(let error):
+            presenter?.didFinishLoading(with: error, for: model)
+        }
     }
 
     func didRequestImagePreloading() {
