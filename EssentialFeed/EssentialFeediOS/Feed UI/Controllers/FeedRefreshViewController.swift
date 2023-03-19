@@ -1,7 +1,11 @@
 import UIKit
 
+protocol FeedRefreshViewControllerDelegate {
+    func didRequestFeedRefresh()
+}
+
 final class FeedRefreshViewController: NSObject, FeedLoadingView {
-    private let loadFeed: () -> Void
+    private let delegate: FeedRefreshViewControllerDelegate
 
     private(set) lazy var refreshControl = {
         let refreshControl = UIRefreshControl()
@@ -9,12 +13,12 @@ final class FeedRefreshViewController: NSObject, FeedLoadingView {
         return refreshControl
     }()
 
-    init(loadFeed: @escaping () -> Void) {
-        self.loadFeed = loadFeed
+    init(feedRefreshDelegate: FeedRefreshViewControllerDelegate) {
+        self.delegate = feedRefreshDelegate
     }
 
     @objc func refresh() {
-        loadFeed()
+        delegate.didRequestFeedRefresh()
     }
 
     func display(model: FeedLoadingViewModel) {
