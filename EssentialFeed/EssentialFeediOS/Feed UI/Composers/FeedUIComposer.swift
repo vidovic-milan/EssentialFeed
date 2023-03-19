@@ -8,9 +8,23 @@ public final class FeedUIComposer {
         let feedPresenter = FeedPresenter(feedLoader: feedLoader)
         let refreshController = FeedRefreshViewController(feedPresenter: feedPresenter)
         let controller = FeedViewController(feedRefreshController: refreshController)
-        feedPresenter.feedLoadingView = refreshController
+        feedPresenter.feedLoadingView = WeakReferenceBox(object: refreshController)
         feedPresenter.feedView = FeedAdapter(controller: controller, imageLoader: imageLoader)
         return controller
+    }
+}
+
+private class WeakReferenceBox<T: AnyObject> {
+    private weak var object: T?
+
+    init(object: T?) {
+        self.object = object
+    }
+}
+
+extension WeakReferenceBox: FeedLoadingView where T: FeedLoadingView {
+    func display(isLoading: Bool) {
+        object?.display(isLoading: isLoading)
     }
 }
 
