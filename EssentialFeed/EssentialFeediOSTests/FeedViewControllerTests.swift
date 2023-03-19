@@ -263,12 +263,9 @@ class FeedViewControllerTests: XCTestCase {
     }
 
     func test_feedImageView_doesNotDisplayImageWhenViewIsNotVisibleAnymore() {
-        let url0 = URL(string: "https://image0.com")!
-        let image0 = makeFeedImage(url: url0)
         let (sut, loader) = makeSUT()
-
         sut.loadViewIfNeeded()
-        loader.completeLoading(with: [image0], at: 0)
+        loader.completeLoading(with: [makeFeedImage()], at: 0)
 
         let view = sut.simulateFeedImageNotVisible(at: 0)
         loader.completeLoadingImage(with: anyImageData(), at: 0)
