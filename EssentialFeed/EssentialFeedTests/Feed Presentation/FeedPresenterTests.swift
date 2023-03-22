@@ -34,23 +34,29 @@ protocol FeedLoadingView {
 
 final class FeedPresenterTests: XCTest {
     func test_init_doesNotSendMessagesUponCreation() {
-        let spy = FeedViewSpy()
-        let sut = FeedPresenter(feedView: spy)
+        let (_, view) = makeSUT()
 
-        XCTAssertEqual(spy.messages.count, 0)
+        XCTAssertEqual(view.messages.count, 0)
     }
 
     func test_didFinishLoadingFeed_displaysFeedAndNoLoading() {
-        let spy = FeedViewSpy()
-        let sut = FeedPresenter(feedView: spy)
-
+        let (sut, view) = makeSUT()
         let feed = anyFeed()
+
         sut.didFinishLoadingFeed(with: feed)
 
-        XCTAssertEqual(spy.messages, [.feed(feed), .isLoading(false)])
+        XCTAssertEqual(view.messages, [.feed(feed), .isLoading(false)])
     }
 
     // MARK: - Helpers
+
+    private func makeSUT(line: UInt = #line, file: StaticString = #file) -> (sut: FeedPresenter, view: FeedViewSpy) {
+        let view = FeedViewSpy()
+        let sut = FeedPresenter(feedView: view, loadingView: view)
+        trackForMemoryLeaks(view, file: file, line: line)
+        trackForMemoryLeaks(sut, file: file, line: line)
+        return (sut, view)
+    }
 
     private class FeedViewSpy: FeedView, FeedLoadingView {
         enum Message: Equatable {
