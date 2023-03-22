@@ -70,6 +70,7 @@
 		BE6D23D329CB766200055383 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6D23D229CB766200055383 /* ErrorView.swift */; };
 		BE6D23D529CB76B600055383 /* FeedErrorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6D23D429CB76B600055383 /* FeedErrorViewModel.swift */; };
 		BE6D23D829CB7B1100055383 /* FeedPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6D23D729CB7B1100055383 /* FeedPresenterTests.swift */; };
+		BE6D23DC29CB813D00055383 /* Feed.strings in Resources */ = {isa = PBXBuildFile; fileRef = BE6D23D929CB811D00055383 /* Feed.strings */; };
 		BEA142D929C454BA000E20DD /* EssentialFeediOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEA142D129C454B9000E20DD /* EssentialFeediOS.framework */; };
 		BEA142E929C48E33000E20DD /* FeedUIIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA142E829C48E33000E20DD /* FeedUIIntegrationTests.swift */; };
 		BEA142EA29C49258000E20DD /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0844768E21FCB24E00439BE9 /* XCTestCase+MemoryLeakTracking.swift */; };
@@ -173,6 +174,8 @@
 		BE6D23D229CB766200055383 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		BE6D23D429CB76B600055383 /* FeedErrorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedErrorViewModel.swift; sourceTree = "<group>"; };
 		BE6D23D729CB7B1100055383 /* FeedPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedPresenterTests.swift; sourceTree = "<group>"; };
+		BE6D23DA29CB811D00055383 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Feed.strings; sourceTree = "<group>"; };
+		BE6D23DB29CB811D00055383 /* sr-Latn */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "sr-Latn"; path = "sr-Latn.lproj/Feed.strings"; sourceTree = "<group>"; };
 		BEA142D129C454B9000E20DD /* EssentialFeediOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = EssentialFeediOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEA142D829C454BA000E20DD /* EssentialFeediOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EssentialFeediOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEA142E829C48E33000E20DD /* FeedUIIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedUIIntegrationTests.swift; sourceTree = "<group>"; };
@@ -505,6 +508,7 @@
 			isa = PBXGroup;
 			children = (
 				BE6D23D729CB7B1100055383 /* FeedPresenterTests.swift */,
+				BE6D23D929CB811D00055383 /* Feed.strings */,
 			);
 			path = "Feed Presentation";
 			sourceTree = "<group>";
@@ -726,6 +730,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BE6D23DC29CB813D00055383 /* Feed.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -897,6 +902,15 @@
 			children = (
 				BE04ED7229C7A41A00CD2009 /* en */,
 				BE04ED7429C7A45600CD2009 /* sr-Latn */,
+			);
+			name = Feed.strings;
+			sourceTree = "<group>";
+		};
+		BE6D23D929CB811D00055383 /* Feed.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BE6D23DA29CB811D00055383 /* en */,
+				BE6D23DB29CB811D00055383 /* sr-Latn */,
 			);
 			name = Feed.strings;
 			sourceTree = "<group>";
