@@ -7,7 +7,9 @@ public final class FeedUIComposer {
     public static func feedComposedWith(feedLoader: FeedLoader, imageLoader: FeedImageDataLoader) -> FeedViewController {
         let feedPresenterAdapter = FeedLoadingPresentationAdapter(feedLoader: MainQueueDispatchDecorator(decoratee: feedLoader))
         let controller = FeedViewController.make(delegate: feedPresenterAdapter, title: FeedPresenter.title)
-        let feedPresenter = FeedPresenter(feedLoadingView: WeakReferenceBox(object: controller), feedView: FeedAdapter(controller: controller, imageLoader: imageLoader))
+        let feedAdapter = FeedAdapter(controller: controller, imageLoader: imageLoader)
+        let weakController = WeakReferenceBox(object: controller)
+        let feedPresenter = FeedPresenter(feedView: feedAdapter, loadingView: weakController, errorView: weakController)
         feedPresenterAdapter.presenter = feedPresenter
         return controller
     }
@@ -33,8 +35,14 @@ private class WeakReferenceBox<T: AnyObject> {
 }
 
 extension WeakReferenceBox: FeedLoadingView where T: FeedLoadingView {
-    func display(model: FeedLoadingViewModel) {
-        object?.display(model: model)
+    func display(_ viewModel: FeedLoadingViewModel) {
+        object?.display(viewModel)
+    }
+}
+
+extension WeakReferenceBox: FeedErrorView where T: FeedErrorView {
+    func display(_ viewModel: FeedErrorViewModel) {
+        object?.display(viewModel)
     }
 }
 
@@ -53,8 +61,8 @@ private class FeedAdapter: FeedView {
         self.imageLoader = imageLoader
     }
 
-    func display(model: FeedViewModel) {
-        controller?.cellControllers = model.feed.map { feedImage in
+    func display(_ viewModel: FeedViewModel) {
+        controller?.cellControllers = viewModel.feed.map { feedImage in
             let adapter = FeedImagePresentationAdapter<UIImage, WeakReferenceBox<FeedImageCellController>>(model: feedImage, imageLoader: imageLoader)
             let view = FeedImageCellController(delegate: adapter)
             let presenter = FeedImagePresenter(feedImageView: WeakReferenceBox(object: view), transformImage: UIImage.init)
@@ -77,9 +85,9 @@ private class FeedLoadingPresentationAdapter: FeedViewControllerDelegate {
         feedLoader.load { [weak self] result in
             switch result {
             case .success(let feed):
-                self?.presenter?.didLoadFeed(with: feed)
+                self?.presenter?.didFinishLoadingFeed(with: feed)
             case .failure(let error):
-                self?.presenter?.didFailLoadingFeed(with: error)
+                self?.presenter?.didFinishLoadingFeed(with: error)
             }
         }
     }

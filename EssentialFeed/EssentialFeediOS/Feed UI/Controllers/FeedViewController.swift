@@ -4,7 +4,9 @@ protocol FeedViewControllerDelegate {
     func didRequestFeedRefresh()
 }
 
-public final class FeedViewController: UITableViewController, FeedLoadingView, UITableViewDataSourcePrefetching {
+public final class FeedViewController: UITableViewController, FeedLoadingView, FeedErrorView, UITableViewDataSourcePrefetching {
+    @IBOutlet private(set) public var errorView: ErrorView!
+
     var delegate: FeedViewControllerDelegate?
 
     var cellControllers = [FeedImageCellController]() {
@@ -20,11 +22,19 @@ public final class FeedViewController: UITableViewController, FeedLoadingView, U
         delegate?.didRequestFeedRefresh()
     }
 
-    func display(model: FeedLoadingViewModel) {
-        if model.isLoading {
+    func display(_ viewModel: FeedLoadingViewModel) {
+        if viewModel.isLoading {
             refreshControl?.beginRefreshing()
         } else {
             refreshControl?.endRefreshing()
+        }
+    }
+
+    func display(_ viewModel: FeedErrorViewModel) {
+        if let errorMessage = viewModel.message {
+            errorView.show(message: errorMessage)
+        } else {
+            errorView.hideMessage()
         }
     }
 

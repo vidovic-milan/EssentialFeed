@@ -296,6 +296,32 @@ class FeedUIIntegrationTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
+    func test_errorMessage_isVisibleOnFeedLoadErrorUntilTapped() {
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        XCTAssertNil(sut.errorMessage)
+
+        loader.completeLoadingWithError(at: 0)
+        XCTAssertEqual(sut.errorMessage, localized("FEED_VIEW_CONNECTION_ERROR"))
+
+        sut.simulateTapOnErrorMessage()
+        XCTAssertNil(sut.errorMessage)
+    }
+
+    func test_errorMessage_isVisibleOnFeedLoadErrorUntilReload() {
+        let (sut, loader) = makeSUT()
+
+        sut.loadViewIfNeeded()
+        XCTAssertNil(sut.errorMessage)
+
+        loader.completeLoadingWithError(at: 0)
+        XCTAssertEqual(sut.errorMessage, localized("FEED_VIEW_CONNECTION_ERROR"))
+
+        sut.simulateUserInitiatedFeedLoad()
+        XCTAssertNil(sut.errorMessage)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FeedViewController, loader: FeedLoaderSpy) {
@@ -417,13 +443,17 @@ private extension FeedImageCell {
     }
 }
 
-private extension UITableViewController {
+private extension FeedViewController {
     var numberOfVisibleFeedViews: Int {
         tableView.numberOfRows(inSection: feedSection)
     }
 
     private var feedSection: Int {
         return 0
+    }
+
+    var errorMessage: String? {
+        errorView.message
     }
 
     var isLoadingIndicatorVisible: Bool {
@@ -462,6 +492,10 @@ private extension UITableViewController {
     func simulateUserInitiatedFeedLoad() {
         refreshControl?.simulatePullToRefresh()
     }
+
+    func simulateTapOnErrorMessage() {
+        errorView.button.simulateTap()
+    }
 }
 
 private extension UIRefreshControl {
@@ -473,6 +507,17 @@ private extension UIRefreshControl {
         }
     }
 }
+
+private extension UIButton {
+    func simulateTap() {
+        allTargets.forEach { target in
+            actions(forTarget: target, forControlEvent: .touchUpInside)?.forEach { action in
+                (target as NSObject).perform(Selector(action))
+            }
+        }
+    }
+}
+    
 
 private extension UIImage {
     static func make(from color: UIColor) -> UIImage {
