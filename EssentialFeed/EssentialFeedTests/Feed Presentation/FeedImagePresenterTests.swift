@@ -19,9 +19,11 @@ protocol FeedImageView {
 final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.Image {
 
     private let feedImageView: View
+    private let transformImage: (Data) -> Image?
 
-    init(feedImageView: View) {
+    init(feedImageView: View, transformImage: @escaping (Data) -> Image?) {
         self.feedImageView = feedImageView
+        self.transformImage = transformImage
     }
 
     func didStartLoadingImage(for model: FeedImage) {
@@ -32,6 +34,22 @@ final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.I
             loadedImage: nil,
             shouldRetry: false,
             isLoading: true
+        )
+        feedImageView.display(model: viewModel)
+    }
+
+    func didFinishLoading(with imageData: Data, for model: FeedImage) {
+        guard let image = transformImage(imageData) else {
+            return
+        }
+
+        let viewModel = FeedImageViewModel<Image>(
+            location: model.location,
+            description: model.description,
+            isLocationHidden: model.location == nil,
+            loadedImage: image,
+            shouldRetry: false,
+            isLoading: false
         )
         feedImageView.display(model: viewModel)
     }
@@ -53,11 +71,25 @@ final class FeedImagePresenterTests: XCTestCase {
         XCTAssertEqual(view.messages, [loadingStateModel(for: feedImage)])
     }
 
+    func test_didFinishLoading_displayLoadedImageState() {
+        let loadedImage = ImageStub()
+        let feedImage = anyFeedImage()
+        let (sut , view) = makeSUT(transformImage: { _ in return loadedImage })
+
+        sut.didFinishLoading(with: Data(), for: feedImage)
+
+        XCTAssertEqual(view.messages, [loadedImageStateModel(for: feedImage, loadedImage: loadedImage)])
+    }
+
     // MARK: - Helpers
 
-    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FeedImagePresenter<ImageStub, FeedImageViewSpy>, view: FeedImageViewSpy) {
+    private func makeSUT(
+        transformImage: @escaping (Data) -> ImageStub? = { _ in return nil },
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> (sut: FeedImagePresenter<ImageStub, FeedImageViewSpy>, view: FeedImageViewSpy) {
         let view = FeedImageViewSpy()
-        let sut = FeedImagePresenter(feedImageView: view)
+        let sut = FeedImagePresenter(feedImageView: view, transformImage: transformImage)
         trackForMemoryLeaks(view)
         trackForMemoryLeaks(sut)
         return (sut, view)
@@ -88,6 +120,17 @@ final class FeedImagePresenterTests: XCTestCase {
             loadedImage: nil,
             shouldRetry: false,
             isLoading: true
+        )
+    }
+
+    private func loadedImageStateModel(for model: FeedImage, loadedImage: ImageStub) -> FeedImageViewModel<ImageStub> {
+        return FeedImageViewModel<ImageStub>(
+            location: model.location,
+            description: model.description,
+            isLocationHidden: model.location == nil,
+            loadedImage: loadedImage,
+            shouldRetry: false,
+            isLoading: false
         )
     }
 }
