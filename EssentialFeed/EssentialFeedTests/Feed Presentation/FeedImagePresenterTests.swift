@@ -53,6 +53,18 @@ final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.I
         )
         feedImageView.display(model: viewModel)
     }
+
+    func didFinishLoading(with error: Error, for model: FeedImage) {
+        let viewModel = FeedImageViewModel<Image>(
+            location: model.location,
+            description: model.description,
+            isLocationHidden: model.location == nil,
+            loadedImage: nil,
+            shouldRetry: true,
+            isLoading: false
+        )
+        feedImageView.display(model: viewModel)
+    }
 }
 
 final class FeedImagePresenterTests: XCTestCase {
@@ -71,7 +83,7 @@ final class FeedImagePresenterTests: XCTestCase {
         XCTAssertEqual(view.messages, [loadingStateModel(for: feedImage)])
     }
 
-    func test_didFinishLoading_displayLoadedImageState() {
+    func test_didFinishLoadingWithImageData_displayLoadedImageState() {
         let loadedImage = ImageStub()
         let feedImage = anyFeedImage()
         let (sut , view) = makeSUT(transformImage: { _ in return loadedImage })
@@ -79,6 +91,15 @@ final class FeedImagePresenterTests: XCTestCase {
         sut.didFinishLoading(with: Data(), for: feedImage)
 
         XCTAssertEqual(view.messages, [loadedImageStateModel(for: feedImage, loadedImage: loadedImage)])
+    }
+
+    func test_didFinishLoadingWithError_displayLoadedImageState() {
+        let (sut , view) = makeSUT()
+
+        let feedImage = anyFeedImage()
+        sut.didFinishLoading(with: NSError(domain: "", code: 1), for: feedImage)
+
+        XCTAssertEqual(view.messages, [errorStateModel(for: feedImage)])
     }
 
     // MARK: - Helpers
@@ -130,6 +151,17 @@ final class FeedImagePresenterTests: XCTestCase {
             isLocationHidden: model.location == nil,
             loadedImage: loadedImage,
             shouldRetry: false,
+            isLoading: false
+        )
+    }
+
+    private func errorStateModel(for model: FeedImage) -> FeedImageViewModel<ImageStub> {
+        return FeedImageViewModel<ImageStub>(
+            location: model.location,
+            description: model.description,
+            isLocationHidden: model.location == nil,
+            loadedImage: nil,
+            shouldRetry: true,
             isLoading: false
         )
     }
