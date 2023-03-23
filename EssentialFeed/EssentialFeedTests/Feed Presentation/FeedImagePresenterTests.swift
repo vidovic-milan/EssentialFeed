@@ -1,79 +1,11 @@
 import XCTest
 import EssentialFeed
 
-struct FeedImageViewModel<Image> {
-    let location: String?
-    let description: String?
-    let isLocationHidden: Bool
-    let loadedImage: Image?
-    let shouldRetry: Bool
-    let isLoading: Bool
-}
-
-protocol FeedImageView {
-    associatedtype Image
-
-    func display(model: FeedImageViewModel<Image>)
-}
-
-final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.Image {
-
-    private let feedImageView: View
-    private let transformImage: (Data) -> Image?
-
-    init(feedImageView: View, transformImage: @escaping (Data) -> Image?) {
-        self.feedImageView = feedImageView
-        self.transformImage = transformImage
-    }
-
-    func didStartLoadingImage(for model: FeedImage) {
-        let viewModel = FeedImageViewModel<Image>(
-            location: model.location,
-            description: model.description,
-            isLocationHidden: model.location == nil,
-            loadedImage: nil,
-            shouldRetry: false,
-            isLoading: true
-        )
-        feedImageView.display(model: viewModel)
-    }
-
-    private struct InvalidImageDataError: Error {}
-
-    func didFinishLoading(with imageData: Data, for model: FeedImage) {
-        guard let image = transformImage(imageData) else {
-            return didFinishLoading(with: InvalidImageDataError(), for: model)
-        }
-
-        let viewModel = FeedImageViewModel<Image>(
-            location: model.location,
-            description: model.description,
-            isLocationHidden: model.location == nil,
-            loadedImage: image,
-            shouldRetry: false,
-            isLoading: false
-        )
-        feedImageView.display(model: viewModel)
-    }
-
-    func didFinishLoading(with error: Error, for model: FeedImage) {
-        let viewModel = FeedImageViewModel<Image>(
-            location: model.location,
-            description: model.description,
-            isLocationHidden: model.location == nil,
-            loadedImage: nil,
-            shouldRetry: true,
-            isLoading: false
-        )
-        feedImageView.display(model: viewModel)
-    }
-}
-
 final class FeedImagePresenterTests: XCTestCase {
     func test_init_doesNotMessageViewUponCreation() {
         let (_ , view) = makeSUT()
 
-        XCTAssertEqual(view.messages, [])
+        XCTAssertEqual(view.messages.count, 0)
     }
 
     func test_didStartLoadingImage_displayLoadingState() {
@@ -82,7 +14,13 @@ final class FeedImagePresenterTests: XCTestCase {
         let feedImage = anyFeedImage()
         sut.didStartLoadingImage(for: feedImage)
 
-        XCTAssertEqual(view.messages, [loadingStateModel(for: feedImage)])
+        let message = view.messages.first
+        XCTAssertEqual(view.messages.count, 1)
+        XCTAssertEqual(message?.description, feedImage.description)
+        XCTAssertEqual(message?.location, feedImage.location)
+        XCTAssertEqual(message?.isLoading, true)
+        XCTAssertEqual(message?.shouldRetry, false)
+        XCTAssertNil(message?.loadedImage)
     }
 
     func test_didFinishLoadingWithImageData_displayLoadedImageState() {
@@ -92,7 +30,13 @@ final class FeedImagePresenterTests: XCTestCase {
 
         sut.didFinishLoading(with: Data(), for: feedImage)
 
-        XCTAssertEqual(view.messages, [loadedImageStateModel(for: feedImage, loadedImage: loadedImage)])
+        let message = view.messages.first
+        XCTAssertEqual(view.messages.count, 1)
+        XCTAssertEqual(message?.description, feedImage.description)
+        XCTAssertEqual(message?.location, feedImage.location)
+        XCTAssertEqual(message?.isLoading, false)
+        XCTAssertEqual(message?.shouldRetry, false)
+        XCTAssertEqual(message?.loadedImage, loadedImage)
     }
 
     func test_didFinishLoadingWithInvalidImageData_displayErrorState() {
@@ -101,7 +45,13 @@ final class FeedImagePresenterTests: XCTestCase {
         let feedImage = anyFeedImage()
         sut.didFinishLoading(with: Data(), for: feedImage)
 
-        XCTAssertEqual(view.messages, [errorStateModel(for: feedImage)])
+        let message = view.messages.first
+        XCTAssertEqual(view.messages.count, 1)
+        XCTAssertEqual(message?.description, feedImage.description)
+        XCTAssertEqual(message?.location, feedImage.location)
+        XCTAssertEqual(message?.isLoading, false)
+        XCTAssertEqual(message?.shouldRetry, true)
+        XCTAssertNil(message?.loadedImage)
     }
 
     func test_didFinishLoadingWithError_displayLoadedImageState() {
@@ -110,7 +60,13 @@ final class FeedImagePresenterTests: XCTestCase {
         let feedImage = anyFeedImage()
         sut.didFinishLoading(with: NSError(domain: "", code: 1), for: feedImage)
 
-        XCTAssertEqual(view.messages, [errorStateModel(for: feedImage)])
+        let message = view.messages.first
+        XCTAssertEqual(view.messages.count, 1)
+        XCTAssertEqual(message?.description, feedImage.description)
+        XCTAssertEqual(message?.location, feedImage.location)
+        XCTAssertEqual(message?.isLoading, false)
+        XCTAssertEqual(message?.shouldRetry, true)
+        XCTAssertNil(message?.loadedImage)
     }
 
     // MARK: - Helpers
@@ -143,39 +99,4 @@ final class FeedImagePresenterTests: XCTestCase {
     private func anyFeedImage() -> FeedImage {
         return FeedImage(id: UUID(), description: nil, location: nil, url: URL(string: "https://a-url.com")!)
     }
-
-    private func loadingStateModel(for model: FeedImage) -> FeedImageViewModel<ImageStub> {
-        return FeedImageViewModel<ImageStub>(
-            location: model.location,
-            description: model.description,
-            isLocationHidden: model.location == nil,
-            loadedImage: nil,
-            shouldRetry: false,
-            isLoading: true
-        )
-    }
-
-    private func loadedImageStateModel(for model: FeedImage, loadedImage: ImageStub) -> FeedImageViewModel<ImageStub> {
-        return FeedImageViewModel<ImageStub>(
-            location: model.location,
-            description: model.description,
-            isLocationHidden: model.location == nil,
-            loadedImage: loadedImage,
-            shouldRetry: false,
-            isLoading: false
-        )
-    }
-
-    private func errorStateModel(for model: FeedImage) -> FeedImageViewModel<ImageStub> {
-        return FeedImageViewModel<ImageStub>(
-            location: model.location,
-            description: model.description,
-            isLocationHidden: model.location == nil,
-            loadedImage: nil,
-            shouldRetry: true,
-            isLoading: false
-        )
-    }
 }
-
-extension FeedImageViewModel: Equatable where Image: Equatable {}
