@@ -75,6 +75,7 @@
 		BEA142EA29C49258000E20DD /* XCTestCase+MemoryLeakTracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0844768E21FCB24E00439BE9 /* XCTestCase+MemoryLeakTracking.swift */; };
 		BEA142EC29C4CFF9000E20DD /* FeedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA142EB29C4CFF9000E20DD /* FeedViewController.swift */; };
 		BEA142EE29C4D03C000E20DD /* FeedImageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA142ED29C4D03C000E20DD /* FeedImageCell.swift */; };
+		BED8765B29CCC9EC000AF3B7 /* FeedImagePresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BED8765A29CCC9EC000AF3B7 /* FeedImagePresenterTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -178,6 +179,7 @@
 		BEA142E829C48E33000E20DD /* FeedUIIntegrationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedUIIntegrationTests.swift; sourceTree = "<group>"; };
 		BEA142EB29C4CFF9000E20DD /* FeedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewController.swift; sourceTree = "<group>"; };
 		BEA142ED29C4D03C000E20DD /* FeedImageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageCell.swift; sourceTree = "<group>"; };
+		BED8765A29CCC9EC000AF3B7 /* FeedImagePresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImagePresenterTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -501,6 +503,7 @@
 			isa = PBXGroup;
 			children = (
 				BE6D23D729CB7B1100055383 /* FeedPresenterTests.swift */,
+				BED8765A29CCC9EC000AF3B7 /* FeedImagePresenterTests.swift */,
 			);
 			path = "Feed Presentation";
 			sourceTree = "<group>";
@@ -820,6 +823,7 @@
 				0844768F21FCB24E00439BE9 /* XCTestCase+MemoryLeakTracking.swift in Sources */,
 				BE1DC76429BF96D50030A231 /* XCTestCase+FeedStoreSpecs.swift in Sources */,
 				BE6D23D829CB7B1100055383 /* FeedPresenterTests.swift in Sources */,
+				BED8765B29CCC9EC000AF3B7 /* FeedImagePresenterTests.swift in Sources */,
 				BE1DC76B29BF9D4A0030A231 /* XCTestCase+FailableInsertFeedStoreSpecs.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
