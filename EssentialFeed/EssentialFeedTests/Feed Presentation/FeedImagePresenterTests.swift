@@ -39,20 +39,28 @@ final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.I
 
 final class FeedImagePresenterTests: XCTestCase {
     func test_init_doesNotMessageViewUponCreation() {
-        let view = FeedImageViewSpy()
-        _ = FeedImagePresenter(feedImageView: view)
+        let (_ , view) = makeSUT()
 
         XCTAssertEqual(view.messages, [])
     }
 
     func test_didStartLoadingImage_displayLoadingState() {
-        let view = FeedImageViewSpy()
-        let sut = FeedImagePresenter(feedImageView: view)
+        let (sut , view) = makeSUT()
 
         let feedImage = anyFeedImage()
         sut.didStartLoadingImage(for: feedImage)
 
         XCTAssertEqual(view.messages, [loadingStateModel(for: feedImage)])
+    }
+
+    // MARK: - Helpers
+
+    private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: FeedImagePresenter<ImageStub, FeedImageViewSpy>, view: FeedImageViewSpy) {
+        let view = FeedImageViewSpy()
+        let sut = FeedImagePresenter(feedImageView: view)
+        trackForMemoryLeaks(view)
+        trackForMemoryLeaks(sut)
+        return (sut, view)
     }
 
     private class ImageStub: Equatable {
