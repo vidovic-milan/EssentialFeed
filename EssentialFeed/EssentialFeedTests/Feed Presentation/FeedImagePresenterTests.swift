@@ -83,11 +83,7 @@ final class FeedImagePresenterTests: XCTestCase {
         return (sut, view)
     }
 
-    private class ImageStub: Equatable {
-        static func == (lhs: FeedImagePresenterTests.ImageStub, rhs: FeedImagePresenterTests.ImageStub) -> Bool {
-            lhs === rhs
-        }
-    }
+    private struct ImageStub: Equatable {}
 
     private class FeedImageViewSpy: FeedImageView {
         var messages: [FeedImageViewModel<ImageStub>] = []
