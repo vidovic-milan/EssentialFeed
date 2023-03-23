@@ -23,6 +23,18 @@ final class FeedImagePresenter<Image, View: FeedImageView> where Image == View.I
     init(feedImageView: View) {
         self.feedImageView = feedImageView
     }
+
+    func didStartLoadingImage(for model: FeedImage) {
+        let viewModel = FeedImageViewModel<Image>(
+            location: model.location,
+            description: model.description,
+            isLocationHidden: model.location == nil,
+            loadedImage: nil,
+            shouldRetry: false,
+            isLoading: true
+        )
+        feedImageView.display(model: viewModel)
+    }
 }
 
 final class FeedImagePresenterTests: XCTestCase {
@@ -31,6 +43,16 @@ final class FeedImagePresenterTests: XCTestCase {
         _ = FeedImagePresenter(feedImageView: view)
 
         XCTAssertEqual(view.messages, [])
+    }
+
+    func test_didStartLoadingImage_displayLoadingState() {
+        let view = FeedImageViewSpy()
+        let sut = FeedImagePresenter(feedImageView: view)
+
+        let feedImage = anyFeedImage()
+        sut.didStartLoadingImage(for: feedImage)
+
+        XCTAssertEqual(view.messages, [loadingStateModel(for: feedImage)])
     }
 
     private class ImageStub: Equatable {
@@ -44,6 +66,21 @@ final class FeedImagePresenterTests: XCTestCase {
         func display(model: FeedImageViewModel<ImageStub>) {
             messages.append(model)
         }
+    }
+
+    private func anyFeedImage() -> FeedImage {
+        return FeedImage(id: UUID(), description: nil, location: nil, url: URL(string: "https://a-url.com")!)
+    }
+
+    private func loadingStateModel(for model: FeedImage) -> FeedImageViewModel<ImageStub> {
+        return FeedImageViewModel<ImageStub>(
+            location: model.location,
+            description: model.description,
+            isLocationHidden: model.location == nil,
+            loadedImage: nil,
+            shouldRetry: false,
+            isLoading: true
+        )
     }
 }
 
