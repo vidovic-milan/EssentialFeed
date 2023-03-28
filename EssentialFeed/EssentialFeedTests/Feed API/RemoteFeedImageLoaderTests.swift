@@ -7,12 +7,19 @@ class RemoteFeedImageLoader {
         self.client = client
     }
 
+    private enum ImageDataLoaderError: Error {
+        case emptyData
+    }
+
     func loadImage(from url: URL, completion: @escaping (Error) -> Void) {
         client.get(from: url, completion: { result in
             switch result {
             case .failure(let error):
                 completion(error)
-            default: break
+            case .success((let data, _)):
+                if data.isEmpty {
+                    completion(ImageDataLoaderError.emptyData)
+                }
             }
         })
     }
@@ -35,7 +42,7 @@ class RemoteFeedImageLoaderTests: XCTestCase {
         XCTAssertEqual(client.requestedURLs, [url])
     }
 
-    func test_loadImage_deliversErrorWhenLoadingFails() {
+    func test_loadImage_deliversErrorWhenRequestFails() {
         let url = anyURL()
         let (sut, client) = makeSUT()
 
@@ -50,6 +57,23 @@ class RemoteFeedImageLoaderTests: XCTestCase {
 
         wait(for: [exp], timeout: 1.0)
         XCTAssertEqual(receivedError as? NSError, NSError(domain: "", code: 1))
+    }
+
+    func test_loadImage_deliversErrorWhenRequestSucceedsWithEmptyData() {
+        let url = anyURL()
+        let (sut, client) = makeSUT()
+
+        var receivedError: Error?
+        let exp = expectation(description: "wait for load completion")
+        sut.loadImage(from: url) {
+            receivedError = $0
+            exp.fulfill()
+        }
+
+        client.complete(with: Data(), response: HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!)
+
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertNotNil(receivedError)
     }
 
     // MARK: - Helpers
@@ -74,6 +98,10 @@ class RemoteFeedImageLoaderTests: XCTestCase {
 
         func complete(with error: Error, at index: Int = 0) {
             getCompletions[index](.failure(error))
+        }
+
+        func complete(with data: Data, response: HTTPURLResponse, at index: Int = 0) {
+            getCompletions[index](.success((data, response)))
         }
     }
 }
