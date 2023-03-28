@@ -7,18 +7,18 @@ class RemoteFeedImageLoader {
         self.client = client
     }
 
-    private enum ImageDataLoaderError: Error {
+    public enum Error: Swift.Error {
         case emptyData
     }
 
-    func loadImage(from url: URL, completion: @escaping (Error) -> Void) {
+    func loadImage(from url: URL, completion: @escaping (Swift.Error) -> Void) {
         client.get(from: url, completion: { result in
             switch result {
             case .failure(let error):
                 completion(error)
             case .success((let data, _)):
                 if data.isEmpty {
-                    completion(ImageDataLoaderError.emptyData)
+                    completion(Error.emptyData)
                 }
             }
         })
@@ -43,37 +43,20 @@ class RemoteFeedImageLoaderTests: XCTestCase {
     }
 
     func test_loadImage_deliversErrorWhenRequestFails() {
-        let url = anyURL()
         let (sut, client) = makeSUT()
 
-        var receivedError: Error?
-        let exp = expectation(description: "wait for load completion")
-        sut.loadImage(from: url) {
-            receivedError = $0
-            exp.fulfill()
-        }
-
-        client.complete(with: NSError(domain: "", code: 1))
-
-        wait(for: [exp], timeout: 1.0)
-        XCTAssertEqual(receivedError as? NSError, NSError(domain: "", code: 1))
+        expect(sut, toCompleteWithError: RemoteFeedImageLoader.Error.emptyData, when: {
+            let error = NSError(domain: "", code: 1)
+            client.complete(with: error)
+        })
     }
 
     func test_loadImage_deliversErrorWhenRequestSucceedsWithEmptyData() {
-        let url = anyURL()
         let (sut, client) = makeSUT()
 
-        var receivedError: Error?
-        let exp = expectation(description: "wait for load completion")
-        sut.loadImage(from: url) {
-            receivedError = $0
-            exp.fulfill()
-        }
-
-        client.complete(with: Data(), response: HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil)!)
-
-        wait(for: [exp], timeout: 1.0)
-        XCTAssertNotNil(receivedError)
+        expect(sut, toCompleteWithError: RemoteFeedImageLoader.Error.emptyData, when: {
+            client.complete(withStatusCode: 200, data: makeEmptyData())
+        })
     }
 
     // MARK: - Helpers
@@ -84,6 +67,34 @@ class RemoteFeedImageLoaderTests: XCTestCase {
         trackForMemoryLeaks(client, file: file, line: line)
         trackForMemoryLeaks(sut, file: file, line: line)
         return (sut, client)
+    }
+
+    private func expect(
+        _ sut: RemoteFeedImageLoader,
+        toCompleteWithError error: Error,
+        when action: () -> Void,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) {
+        var receivedError: Error?
+        let exp = expectation(description: "wait for load completion")
+        sut.loadImage(from: anyURL()) {
+            receivedError = $0
+            exp.fulfill()
+        }
+
+        action()
+
+        wait(for: [exp], timeout: 1.0)
+        XCTAssertNotNil(receivedError)
+    }
+
+    private func anyHTTPURLResponse() -> HTTPURLResponse {
+        return HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
+    }
+
+    private func makeEmptyData() -> Data {
+        return Data()
     }
 
     private class HTTPClientSpy: HTTPClient {
@@ -100,7 +111,13 @@ class RemoteFeedImageLoaderTests: XCTestCase {
             getCompletions[index](.failure(error))
         }
 
-        func complete(with data: Data, response: HTTPURLResponse, at index: Int = 0) {
+        func complete(withStatusCode code: Int, data: Data, at index: Int = 0) {
+            let response = HTTPURLResponse(
+                url: requestedURLs[index],
+                statusCode: code,
+                httpVersion: nil,
+                headerFields: nil
+            )!
             getCompletions[index](.success((data, response)))
         }
     }
