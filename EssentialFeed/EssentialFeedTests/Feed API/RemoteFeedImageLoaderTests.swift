@@ -8,18 +8,22 @@ class RemoteFeedImageLoader {
     }
 
     public enum Error: Swift.Error {
+        case connection
         case emptyData
+        case invalidData
     }
 
     func loadImage(from url: URL, completion: @escaping (Swift.Error) -> Void) {
         client.get(from: url, completion: { result in
             switch result {
-            case .failure(let error):
-                completion(error)
-            case .success((let data, _)):
+            case .success((let data, let response)):
                 if data.isEmpty {
                     completion(Error.emptyData)
+                } else if response.statusCode != 200 {
+                    completion(Error.invalidData)
                 }
+            case .failure:
+                completion(Error.connection)
             }
         })
     }
@@ -45,7 +49,7 @@ class RemoteFeedImageLoaderTests: XCTestCase {
     func test_loadImage_deliversErrorWhenRequestFails() {
         let (sut, client) = makeSUT()
 
-        expect(sut, toCompleteWithError: RemoteFeedImageLoader.Error.emptyData, when: {
+        expect(sut, toCompleteWithError: RemoteFeedImageLoader.Error.connection, when: {
             let error = NSError(domain: "", code: 1)
             client.complete(with: error)
         })
@@ -56,6 +60,14 @@ class RemoteFeedImageLoaderTests: XCTestCase {
 
         expect(sut, toCompleteWithError: RemoteFeedImageLoader.Error.emptyData, when: {
             client.complete(withStatusCode: 200, data: makeEmptyData())
+        })
+    }
+
+    func test_loadImage_deliversErrorWhenRequestSucceedsWithInvalidStatusCode() {
+        let (sut, client) = makeSUT()
+
+        expect(sut, toCompleteWithError: RemoteFeedImageLoader.Error.invalidData, when: {
+            client.complete(withStatusCode: 400, data: makeImageData())
         })
     }
 
@@ -86,11 +98,15 @@ class RemoteFeedImageLoaderTests: XCTestCase {
         action()
 
         wait(for: [exp], timeout: 1.0)
-        XCTAssertNotNil(receivedError)
+        XCTAssertEqual(receivedError as? RemoteFeedImageLoader.Error, error as? RemoteFeedImageLoader.Error)
     }
 
     private func anyHTTPURLResponse() -> HTTPURLResponse {
         return HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
+    }
+
+    private func makeImageData() -> Data {
+        return "abc".data(using: .utf8)!
     }
 
     private func makeEmptyData() -> Data {
