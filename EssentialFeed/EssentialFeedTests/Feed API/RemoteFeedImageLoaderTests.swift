@@ -109,6 +109,15 @@ class RemoteFeedImageLoaderTests: XCTestCase {
         XCTAssertNil(result)
     }
 
+    func test_cancelImageDataTask_cancelsClientDataTask() {
+        let (sut, client) = makeSUT()
+
+        let task = sut.loadImage(from: anyURL(), completion: { _ in })
+        task.cancel()
+
+        XCTAssertEqual(client.cancelTaskCallCount, 1)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: RemoteFeedImageLoader, client: HTTPClientSpy) {
@@ -157,18 +166,24 @@ class RemoteFeedImageLoaderTests: XCTestCase {
     }
 
     private class HTTPClientTaskSpy: HTTPClientTask {
-        func cancel() {}
+        var cancelTaskCallCount: Int = 0
+        func cancel() {
+            cancelTaskCallCount += 1
+        }
     }
 
     private class HTTPClientSpy: HTTPClient {
         var loadImageCallCount: Int { requestedURLs.count }
+        var cancelTaskCallCount: Int { ongoingTask.cancelTaskCallCount }
         var requestedURLs: [URL] = []
 
         private var getCompletions: [(HTTPClient.Result) -> Void] = []
+        private var ongoingTask = HTTPClientTaskSpy()
         func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
             requestedURLs.append(url)
             getCompletions.append(completion)
-            return HTTPClientTaskSpy()
+            ongoingTask = HTTPClientTaskSpy()
+            return ongoingTask
         }
 
         func complete(with error: Error, at index: Int = 0) {
