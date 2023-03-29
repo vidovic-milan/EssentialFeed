@@ -17,7 +17,7 @@ class RemoteFeedImageLoader {
     }
 
     func loadImage(from url: URL, completion: @escaping (Result) -> Void) {
-        client.get(from: url, completion: { result in
+        _ = client.get(from: url, completion: { result in
             switch result {
             case .success((let data, let response)):
                 if data.isEmpty {
@@ -132,14 +132,19 @@ class RemoteFeedImageLoaderTests: XCTestCase {
         return Data()
     }
 
+    private class HTTPClientTaskSpy: HTTPClientTask {
+        func cancel() {}
+    }
+
     private class HTTPClientSpy: HTTPClient {
         var loadImageCallCount: Int { requestedURLs.count }
         var requestedURLs: [URL] = []
 
         private var getCompletions: [(HTTPClient.Result) -> Void] = []
-        func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) {
+        func get(from url: URL, completion: @escaping (HTTPClient.Result) -> Void) -> HTTPClientTask {
             requestedURLs.append(url)
             getCompletions.append(completion)
+            return HTTPClientTaskSpy()
         }
 
         func complete(with error: Error, at index: Int = 0) {
