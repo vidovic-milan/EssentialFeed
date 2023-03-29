@@ -16,8 +16,19 @@ class RemoteFeedImageLoader {
         case invalidData
     }
 
-    func loadImage(from url: URL, completion: @escaping (Result) -> Void) {
-        _ = client.get(from: url, completion: { result in
+    private class TaskWrapper: FeedImageLoaderDataTask {
+        var task: HTTPClientTask?
+
+        func cancel() {
+            task?.cancel()
+            task = nil
+        }
+    }
+
+    func loadImage(from url: URL, completion: @escaping (Result) -> Void) -> FeedImageLoaderDataTask {
+        let wrapper = TaskWrapper()
+        let task = client.get(from: url, completion: { result in
+            guard wrapper.task != nil else { return }
             switch result {
             case .success((let data, let response)):
                 if data.isEmpty {
@@ -31,6 +42,8 @@ class RemoteFeedImageLoader {
                 completion(.failure(Error.connection))
             }
         })
+        wrapper.task = task
+        return wrapper
     }
 }
 
@@ -46,7 +59,7 @@ class RemoteFeedImageLoaderTests: XCTestCase {
         let url = anyURL()
         let (sut, client) = makeSUT()
 
-        sut.loadImage(from: url, completion: { _ in })
+        _ = sut.loadImage(from: url, completion: { _ in })
 
         XCTAssertEqual(client.requestedURLs, [url])
     }
@@ -85,6 +98,17 @@ class RemoteFeedImageLoaderTests: XCTestCase {
         })
     }
 
+    func test_cancelTask_doesNotDeliverResult() {
+        let (sut, client) = makeSUT()
+
+        var result: RemoteFeedImageLoader.Result?
+        let task = sut.loadImage(from: anyURL(), completion: { result = $0 })
+        task.cancel()
+        client.complete(withStatusCode: 200, data: makeImageData())
+
+        XCTAssertNil(result)
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #file, line: UInt = #line) -> (sut: RemoteFeedImageLoader, client: HTTPClientSpy) {
@@ -103,7 +127,7 @@ class RemoteFeedImageLoaderTests: XCTestCase {
         line: UInt = #line
     ) {
         let exp = expectation(description: "wait for load completion")
-        sut.loadImage(from: anyURL()) { result in
+        _ = sut.loadImage(from: anyURL()) { result in
             switch (expectedResult, result) {
             case let (.success(expectedData), .success(data)):
                 XCTAssertEqual(expectedData, data, file: file, line: line)
