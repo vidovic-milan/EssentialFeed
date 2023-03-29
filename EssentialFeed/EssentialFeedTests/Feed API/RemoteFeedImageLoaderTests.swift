@@ -17,32 +17,47 @@ class RemoteFeedImageLoader {
     }
 
     private class TaskWrapper: FeedImageLoaderDataTask {
+        private var completion: ((Result) -> Void)?
+
         var task: HTTPClientTask?
 
+        init(completion: @escaping (Result) -> Void) {
+            self.completion = completion
+        }
+
         func cancel() {
+            preventFurtherCompletion()
             task?.cancel()
-            task = nil
+        }
+
+        func complete(with result: Result) {
+            completion?(result)
+        }
+
+        private func preventFurtherCompletion() {
+            completion = nil
         }
     }
 
     func loadImage(from url: URL, completion: @escaping (Result) -> Void) -> FeedImageLoaderDataTask {
-        let wrapper = TaskWrapper()
-        let task = client.get(from: url, completion: { [weak self] result in
-            guard wrapper.task != nil, self != nil else { return }
-            switch result {
-            case .success((let data, let response)):
-                if data.isEmpty {
-                    completion(.failure(Error.emptyData))
-                } else if response.statusCode != 200 {
-                    completion(.failure(Error.invalidData))
-                } else {
-                    completion(.success(data))
-                }
-            case .failure:
-                completion(.failure(Error.connection))
-            }
+        let wrapper = TaskWrapper(completion: completion)
+        wrapper.task = client.get(from: url, completion: { [weak self] result in
+            guard self != nil else { return }
+            
+            wrapper.complete(
+                with: result
+                    .mapError { _ in Error.connection }
+                    .flatMap { data, response in
+                        if data.isEmpty {
+                            return .failure(Error.emptyData)
+                        } else if response.statusCode != 200 {
+                            return .failure(Error.invalidData)
+                        } else {
+                            return .success(data)
+                        }
+                    }
+            )
         })
-        wrapper.task = task
         return wrapper
     }
 }
