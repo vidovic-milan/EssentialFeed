@@ -1,67 +1,6 @@
 import XCTest
 import EssentialFeed
 
-class RemoteFeedImageLoader {
-    private let client: HTTPClient
-
-    init(client: HTTPClient) {
-        self.client = client
-    }
-
-    typealias Result = Swift.Result<Data, Swift.Error>
-
-    public enum Error: Swift.Error {
-        case connection
-        case emptyData
-        case invalidData
-    }
-
-    private class TaskWrapper: FeedImageLoaderDataTask {
-        private var completion: ((Result) -> Void)?
-
-        var task: HTTPClientTask?
-
-        init(completion: @escaping (Result) -> Void) {
-            self.completion = completion
-        }
-
-        func cancel() {
-            preventFurtherCompletion()
-            task?.cancel()
-        }
-
-        func complete(with result: Result) {
-            completion?(result)
-        }
-
-        private func preventFurtherCompletion() {
-            completion = nil
-        }
-    }
-
-    func loadImage(from url: URL, completion: @escaping (Result) -> Void) -> FeedImageLoaderDataTask {
-        let wrapper = TaskWrapper(completion: completion)
-        wrapper.task = client.get(from: url, completion: { [weak self] result in
-            guard self != nil else { return }
-            
-            wrapper.complete(
-                with: result
-                    .mapError { _ in Error.connection }
-                    .flatMap { data, response in
-                        if data.isEmpty {
-                            return .failure(Error.emptyData)
-                        } else if response.statusCode != 200 {
-                            return .failure(Error.invalidData)
-                        } else {
-                            return .success(data)
-                        }
-                    }
-            )
-        })
-        return wrapper
-    }
-}
-
 class RemoteFeedImageLoaderTests: XCTestCase {
 
     func test_init_doesNotLoadFeedImageUponCreation() {
