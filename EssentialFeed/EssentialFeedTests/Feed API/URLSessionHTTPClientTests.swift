@@ -74,9 +74,13 @@ class URLSessionHTTPClientTests: XCTestCase {
 	}
 
     func test_getFromURL_doesNotDeliverResultWhenTaskGetsCancelled() {
+        let exp = expectation(description: "Wait for request")
+        URLProtocolStub.observeRequests { _ in exp.fulfill() }
+
         let result = resultFor { task in
             task.cancel()
         }
+        wait(for: [exp], timeout: 1.0)
 
         XCTAssertEqual((result as? NSError)?.code, URLError.cancelled.rawValue)
     }
