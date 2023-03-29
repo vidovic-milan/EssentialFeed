@@ -27,8 +27,8 @@ class RemoteFeedImageLoader {
 
     func loadImage(from url: URL, completion: @escaping (Result) -> Void) -> FeedImageLoaderDataTask {
         let wrapper = TaskWrapper()
-        let task = client.get(from: url, completion: { result in
-            guard wrapper.task != nil else { return }
+        let task = client.get(from: url, completion: { [weak self] result in
+            guard wrapper.task != nil, self != nil else { return }
             switch result {
             case .success((let data, let response)):
                 if data.isEmpty {
@@ -116,6 +116,19 @@ class RemoteFeedImageLoaderTests: XCTestCase {
         task.cancel()
 
         XCTAssertEqual(client.cancelTaskCallCount, 1)
+    }
+
+    func test_loadImage_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
+        let client = HTTPClientSpy()
+        var sut: RemoteFeedImageLoader? = RemoteFeedImageLoader(client: client)
+        
+        var capturedResults = [RemoteFeedImageLoader.Result]()
+        _ = sut?.loadImage(from: anyURL()) { capturedResults.append($0) }
+
+        sut = nil
+        client.complete(withStatusCode: 200, data: makeImageData())
+        
+        XCTAssertTrue(capturedResults.isEmpty)
     }
 
     // MARK: - Helpers
