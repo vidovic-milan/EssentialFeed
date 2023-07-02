@@ -18,14 +18,13 @@ class LocalFeedImageDataLoader {
         self.store = store
     }
 
-    func loadImage(from url: URL, completion: @escaping (Result<Data?, Error>) -> Void) {
+    func loadImage(from url: URL, completion: @escaping (Result<Data, Error>) -> Void) {
         store.retrieve(dataFor: url) { result in
-            switch result {
-            case .success:
-                completion(.failure(.notFound))
-            case .failure:
-                completion(.failure(.failed))
-            }
+            completion(
+                result
+                    .mapError { _ in Error.failed }
+                    .flatMap { data in data.map { .success($0) } ?? .failure(Error.notFound) }
+            )
         }
     }
 }
@@ -63,6 +62,15 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         })
     }
 
+    func test_loadImageFromURL_deliversStoredDataWhenThereIsDataInStore() {
+        let (sut, store) = makeSUT()
+
+        let storedData = anyData()
+        expect(sut, toCompleteWith: .success(storedData), when: {
+            store.completeRetrieval(with: storedData)
+        })
+    }
+
     // MARK: - Helpers
 
     private func makeSUT(file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalFeedImageDataLoader, store: FeedImageStoreSpy) {
@@ -73,7 +81,7 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         return (sut, store)
     }
 
-    private func expect(_ sut: LocalFeedImageDataLoader, toCompleteWith expectedResult: Result<Data?, Error>, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
+    private func expect(_ sut: LocalFeedImageDataLoader, toCompleteWith expectedResult: Result<Data, Error>, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
         let exp = expectation(description: "Wait for load completion")
 
         sut.loadImage(from: anyURL()) { receivedResult in
@@ -94,6 +102,10 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
 
         action()
         wait(for: [exp], timeout: 1.0)
+    }
+
+    private func anyData() -> Data {
+        "a".data(using: .utf8)!
     }
 
     private class FeedImageStoreSpy: FeedImageDataStore {
