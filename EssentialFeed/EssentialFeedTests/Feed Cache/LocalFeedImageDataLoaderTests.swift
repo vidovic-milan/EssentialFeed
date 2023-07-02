@@ -72,7 +72,7 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
     func test_loadImageFromURL_doesNotDeliverDataWhenTaskIsCancelled() {
         let (sut, store) = makeSUT()
 
-        var receivedResults: [FeedImageDataLoader.Result] = []
+        var receivedResults: [LocalFeedImageDataLoader.LoadResult] = []
         let task = sut.loadImage(from: anyURL(), completion: { receivedResults.append($0) })
 
         task.cancel()
@@ -88,11 +88,24 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         let store = FeedImageStoreSpy()
         var sut: LocalFeedImageDataLoader? = LocalFeedImageDataLoader(store: store)
 
-        var receivedResults: [LocalFeedImageDataLoader.Result] = []
+        var receivedResults: [LocalFeedImageDataLoader.LoadResult] = []
         _ = sut?.loadImage(from: anyURL(), completion: { receivedResults.append($0) })
 
         sut = nil
         store.completeRetrieval(with: anyNSError())
+
+        XCTAssertTrue(receivedResults.isEmpty)
+    }
+
+    func test_save_doesNotDeliverAnyResultAfterInstanceHasBeenDeallocated() {
+        let store = FeedImageStoreSpy()
+        var sut: LocalFeedImageDataLoader? = LocalFeedImageDataLoader(store: store)
+
+        var receivedResults: [LocalFeedImageDataLoader.SaveResult] = []
+        _ = sut?.save(data: anyData(), for: anyURL(), completion: { receivedResults.append($0) })
+
+        sut = nil
+        store.completeInsertionSuccessfully()
 
         XCTAssertTrue(receivedResults.isEmpty)
     }
