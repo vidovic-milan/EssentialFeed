@@ -31,7 +31,7 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
     func test_loadImageFromURL_failsOnStoreError() {
         let (sut, store) = makeSUT()
         
-        expect(sut, toCompleteWith: .failure(LocalFeedImageDataLoader.Error.failed), when: {
+        expect(sut, toCompleteWith: .failure(LocalFeedImageDataLoader.LoadError.failed), when: {
             store.completeRetrieval(with: anyNSError())
         })
     }
@@ -39,7 +39,7 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
     func test_loadImageFromURL_deliversNotFoundErrorWhenDataForUrlIsMissing() {
         let (sut, store) = makeSUT()
 
-        expect(sut, toCompleteWith: .failure(LocalFeedImageDataLoader.Error.notFound), when: {
+        expect(sut, toCompleteWith: .failure(LocalFeedImageDataLoader.LoadError.notFound), when: {
             store.completeRetrieval(with: nil)
         })
     }
@@ -72,7 +72,7 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         let store = FeedImageStoreSpy()
         var sut: LocalFeedImageDataLoader? = LocalFeedImageDataLoader(store: store)
 
-        var receivedResults: [FeedImageDataLoader.Result] = []
+        var receivedResults: [LocalFeedImageDataLoader.Result] = []
         _ = sut?.loadImage(from: anyURL(), completion: { receivedResults.append($0) })
 
         sut = nil
@@ -91,7 +91,7 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         return (sut, store)
     }
 
-    private func expect(_ sut: LocalFeedImageDataLoader, toCompleteWith expectedResult: FeedImageDataLoader.Result, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
+    private func expect(_ sut: LocalFeedImageDataLoader, toCompleteWith expectedResult: LocalFeedImageDataLoader.LoadResult, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
         let exp = expectation(description: "Wait for load completion")
 
         _ = sut.loadImage(from: anyURL()) { receivedResult in
@@ -99,8 +99,8 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
             case let (.success(receivedData), .success(expectedData)):
                 XCTAssertEqual(receivedData, expectedData, file: file, line: line)
 
-            case (.failure(let receivedError as LocalFeedImageDataLoader.Error),
-                  .failure(let expectedError as LocalFeedImageDataLoader.Error)):
+            case (.failure(let receivedError as LocalFeedImageDataLoader.LoadError),
+                  .failure(let expectedError as LocalFeedImageDataLoader.LoadError)):
                 XCTAssertEqual(receivedError, expectedError, file: file, line: line)
 
             default:

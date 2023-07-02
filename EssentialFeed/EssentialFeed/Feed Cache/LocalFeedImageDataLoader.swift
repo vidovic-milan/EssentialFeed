@@ -1,21 +1,35 @@
 import Foundation
 
-public class LocalFeedImageDataLoader: FeedImageDataLoader {
+public class LocalFeedImageDataLoader {
     private let store: FeedImageDataStore
 
-    public enum Error: Swift.Error {
+    public init(store: FeedImageDataStore) {
+        self.store = store
+    }
+}
+
+extension LocalFeedImageDataLoader {
+    public func save(data: Data, for url: URL) {
+        store.insert(data: data, for: url)
+    }
+}
+
+extension LocalFeedImageDataLoader: FeedImageDataLoader {
+    public typealias LoadResult = FeedImageDataLoader.Result
+
+    public enum LoadError: Swift.Error {
         case failed
         case notFound
     }
 
-    class Task: FeedImageLoaderDataTask {
-        private var completion: ((FeedImageDataLoader.Result) -> Void)?
+    class LoadImageDataTask: FeedImageLoaderDataTask {
+        private var completion: ((LoadResult) -> Void)?
 
-        init(completion: @escaping (FeedImageDataLoader.Result) -> Void) {
+        init(completion: @escaping (LoadResult) -> Void) {
             self.completion = completion
         }
 
-        func complete(with result: FeedImageDataLoader.Result) {
+        func complete(with result: LoadResult) {
             completion?(result)
         }
         
@@ -24,24 +38,16 @@ public class LocalFeedImageDataLoader: FeedImageDataLoader {
         }
     }
 
-    public init(store: FeedImageDataStore) {
-        self.store = store
-    }
-
-    public func loadImage(from url: URL, completion: @escaping (FeedImageDataLoader.Result) -> Void) -> FeedImageLoaderDataTask {
-        let task = Task(completion: completion)
+    public func loadImage(from url: URL, completion: @escaping (LoadResult) -> Void) -> FeedImageLoaderDataTask {
+        let task = LoadImageDataTask(completion: completion)
         store.retrieve(dataFor: url) { [weak self] result in
             guard self != nil else { return }
             task.complete(with:
                 result
-                    .mapError { _ in Error.failed }
-                    .flatMap { data in data.map { .success($0) } ?? .failure(Error.notFound) }
+                    .mapError { _ in LoadError.failed }
+                    .flatMap { data in data.map { .success($0) } ?? .failure(LoadError.notFound) }
             )
         }
         return task
-    }
-
-    public func save(data: Data, for url: URL) {
-        store.insert(data: data, for: url)
     }
 }
