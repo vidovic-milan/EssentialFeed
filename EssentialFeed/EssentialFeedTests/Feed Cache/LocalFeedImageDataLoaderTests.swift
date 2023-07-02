@@ -2,7 +2,7 @@ import XCTest
 import EssentialFeed
 
 protocol FeedImageDataStore {
-    func retrieve(dataFor url: URL)
+    func retrieve(dataFor url: URL, completion: @escaping (Error) -> Void)
 }
 
 class LocalFeedImageDataLoader {
@@ -12,8 +12,10 @@ class LocalFeedImageDataLoader {
         self.store = store
     }
 
-    func loadImage(from url: URL) {
-        store.retrieve(dataFor: url)
+    func loadImage(from url: URL, completion: @escaping (Error) -> Void) {
+        store.retrieve(dataFor: url) { result in
+            completion(result)
+        }
     }
 }
 
@@ -29,9 +31,24 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         let (sut, store) = makeSUT()
         let url = anyURL()
 
-        sut.loadImage(from: url)
+        sut.loadImage(from: url, completion: { _ in })
 
         XCTAssertEqual(store.receivedMessages, [.retrieve(dataFor: url)])
+    }
+
+    func test_loadImageFromURL_failsOnStoreError() {
+        let (sut, store) = makeSUT()
+        let url = anyURL()
+
+        let expectedError = anyNSError()
+        var receivedError: Error?
+        sut.loadImage(from: url, completion: {
+            receivedError = $0
+        })
+        
+        store.completeRetrieval(with: expectedError)
+
+        XCTAssertEqual(receivedError as? NSError, expectedError)
     }
 
     // MARK: - Helpers
@@ -49,9 +66,15 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
             case retrieve(dataFor: URL)
         }
         var receivedMessages: [Message] = []
+        private var retrieveCompletions: [(Error) -> Void] = []
 
-        func retrieve(dataFor url: URL) {
+        func retrieve(dataFor url: URL, completion: @escaping (Error) -> Void) {
             receivedMessages.append(.retrieve(dataFor: url))
+            retrieveCompletions.append(completion)
+        }
+
+        func completeRetrieval(with error: Error, at index: Int = 0) {
+            retrieveCompletions[index](error)
         }
     }
 }
