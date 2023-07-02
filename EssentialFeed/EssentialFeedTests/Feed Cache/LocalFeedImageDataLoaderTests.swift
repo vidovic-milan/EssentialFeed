@@ -23,7 +23,7 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         let url = anyURL()
         let data = anyData()
 
-        sut.save(data: data, for: url)
+        sut.save(data: data, for: url) { _ in }
 
         XCTAssertEqual(store.receivedMessages, [.insert(data: data, for: url)])
     }
@@ -31,15 +31,23 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
     func test_loadImageFromURL_failsOnStoreError() {
         let (sut, store) = makeSUT()
         
-        expect(sut, toCompleteWith: .failure(LocalFeedImageDataLoader.LoadError.failed), when: {
+        expectLoad(sut, toCompleteWith: .failure(LocalFeedImageDataLoader.LoadError.failed), when: {
             store.completeRetrieval(with: anyNSError())
+        })
+    }
+
+    func test_save_failsOnStoreError() {
+        let (sut, store) = makeSUT()
+        
+        expectSave(sut, toCompleteWith: .failure(LocalFeedImageDataLoader.SaveError.failed), when: {
+            store.completeInsertion(with: anyNSError())
         })
     }
 
     func test_loadImageFromURL_deliversNotFoundErrorWhenDataForUrlIsMissing() {
         let (sut, store) = makeSUT()
 
-        expect(sut, toCompleteWith: .failure(LocalFeedImageDataLoader.LoadError.notFound), when: {
+        expectLoad(sut, toCompleteWith: .failure(LocalFeedImageDataLoader.LoadError.notFound), when: {
             store.completeRetrieval(with: nil)
         })
     }
@@ -48,7 +56,7 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         let (sut, store) = makeSUT()
 
         let storedData = anyData()
-        expect(sut, toCompleteWith: .success(storedData), when: {
+        expectLoad(sut, toCompleteWith: .success(storedData), when: {
             store.completeRetrieval(with: storedData)
         })
     }
@@ -91,7 +99,7 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         return (sut, store)
     }
 
-    private func expect(_ sut: LocalFeedImageDataLoader, toCompleteWith expectedResult: LocalFeedImageDataLoader.LoadResult, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
+    private func expectLoad(_ sut: LocalFeedImageDataLoader, toCompleteWith expectedResult: LocalFeedImageDataLoader.LoadResult, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
         let exp = expectation(description: "Wait for load completion")
 
         _ = sut.loadImage(from: anyURL()) { receivedResult in
@@ -101,6 +109,29 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
 
             case (.failure(let receivedError as LocalFeedImageDataLoader.LoadError),
                   .failure(let expectedError as LocalFeedImageDataLoader.LoadError)):
+                XCTAssertEqual(receivedError, expectedError, file: file, line: line)
+
+            default:
+                XCTFail("Expected result \(expectedResult), got \(receivedResult) instead", file: file, line: line)
+            }
+
+            exp.fulfill()
+        }
+
+        action()
+        wait(for: [exp], timeout: 1.0)
+    }
+
+    private func expectSave(_ sut: LocalFeedImageDataLoader, toCompleteWith expectedResult: LocalFeedImageDataLoader.SaveResult, when action: () -> Void, file: StaticString = #file, line: UInt = #line) {
+        let exp = expectation(description: "Wait for load completion")
+
+        sut.save(data: anyData(), for: anyURL()) { receivedResult in
+            switch (receivedResult, expectedResult) {
+            case (.success, .success):
+                break
+
+            case (.failure(let receivedError as LocalFeedImageDataLoader.SaveError),
+                  .failure(let expectedError as LocalFeedImageDataLoader.SaveError)):
                 XCTAssertEqual(receivedError, expectedError, file: file, line: line)
 
             default:
@@ -139,8 +170,14 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
             retrieveCompletions[index](.success(data))
         }
 
-        func insert(data: Data, for url: URL) {
+        private var insertCompletions: [(FeedImageDataStore.InsertionResult) -> Void] = []
+        func insert(data: Data, for url: URL, completion: @escaping (InsertionResult) -> Void) {
             receivedMessages.append(.insert(data: data, for: url))
+            insertCompletions.append(completion)
+        }
+
+        func completeInsertion(with error: Error, at index: Int = 0) {
+            insertCompletions[index](.failure(error))
         }
     }
 }
