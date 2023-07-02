@@ -1,7 +1,7 @@
 import XCTest
 import EssentialFeed
 
-class CoreDataFeedImageDataStoreTests: XCTestCase {
+class ManagedFeedImageDataStoreTests: XCTestCase {
 
     func test_retrieveImageData_deliversNotFoundWhenEmpty() {
         let sut = makeSUT()
