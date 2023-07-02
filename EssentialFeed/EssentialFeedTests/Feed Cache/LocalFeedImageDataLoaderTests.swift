@@ -8,13 +8,17 @@ protocol FeedImageDataStore {
 class LocalFeedImageDataLoader {
     private let store: FeedImageDataStore
 
+    public enum Error: Swift.Error {
+        case failed
+    }
+
     init(store: FeedImageDataStore) {
         self.store = store
     }
 
     func loadImage(from url: URL, completion: @escaping (Error) -> Void) {
         store.retrieve(dataFor: url) { result in
-            completion(result)
+            completion(Error.failed)
         }
     }
 }
@@ -40,15 +44,15 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
         let (sut, store) = makeSUT()
         let url = anyURL()
 
-        let expectedError = anyNSError()
+        let retrievalError = anyNSError()
         var receivedError: Error?
         sut.loadImage(from: url, completion: {
             receivedError = $0
         })
         
-        store.completeRetrieval(with: expectedError)
+        store.completeRetrieval(with: retrievalError)
 
-        XCTAssertEqual(receivedError as? NSError, expectedError)
+        XCTAssertEqual(receivedError as? LocalFeedImageDataLoader.Error, .failed)
     }
 
     // MARK: - Helpers
