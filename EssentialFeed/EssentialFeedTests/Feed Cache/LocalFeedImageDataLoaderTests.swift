@@ -46,11 +46,14 @@ class LocalFeedImageDataLoaderTests: XCTestCase {
 
         let retrievalError = anyNSError()
         var receivedError: Error?
-        sut.loadImage(from: url, completion: {
-            receivedError = $0
+        let exp = expectation(description: "wait for image load")
+        sut.loadImage(from: url, completion: { error in
+            receivedError = error
+            exp.fulfill()
         })
         
         store.completeRetrieval(with: retrievalError)
+        wait(for: [exp], timeout: 1.0)
 
         XCTAssertEqual(receivedError as? LocalFeedImageDataLoader.Error, .failed)
     }
