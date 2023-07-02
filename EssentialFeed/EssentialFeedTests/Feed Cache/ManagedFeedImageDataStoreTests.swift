@@ -26,7 +26,19 @@ class CoreDataFeedImageDataStoreTests: XCTestCase {
 
         insert(storedData, for: url, into: sut)
 
-        expect(sut, toCompleteRetrievalWith: stored(storedData), for: url)
+        expect(sut, toCompleteRetrievalWith: found(storedData), for: url)
+    }
+
+    func test_retrieveImageData_deliversLastStoredDataWhenDataForUrlIsAvailable() {
+        let sut = makeSUT()
+        let url = URL(string: "https://a-url.com")!
+        let initialData = anyData()
+        let lastData = anotherData()
+
+        insert(initialData, for: url, into: sut)
+        insert(lastData, for: url, into: sut)
+
+        expect(sut, toCompleteRetrievalWith: found(lastData), for: url)
     }
 
     // - MARK: Helpers
@@ -42,12 +54,16 @@ class CoreDataFeedImageDataStoreTests: XCTestCase {
         return .success(.none)
     }
 
-    private func stored(_ data: Data) -> FeedImageDataStore.RetrievalResult {
+    private func found(_ data: Data) -> FeedImageDataStore.RetrievalResult {
         return .success(data)
     }
 
     private func anyData() -> Data {
-        "a".data(using: .utf8)!
+        "any".data(using: .utf8)!
+    }
+
+    private func anotherData() -> Data {
+        "another".data(using: .utf8)!
     }
 
     private func localFeedImage(url: URL) -> LocalFeedImage {
