@@ -282,17 +282,30 @@ class FeedUIIntegrationTests: XCTestCase {
         XCTAssertNil(view?.renderedImage)
     }
 
-    func test_feedLoaderCompletion_returnsImagesOnBackgroundThread() {
+    func test_loadFeedCompletion_dispatchesFromBackgroundToMainThread() {
         let (sut, loader) = makeSUT()
-        let image = makeFeedImage()
         sut.loadViewIfNeeded()
-        
-        let exp = expectation(description: "wait for image load")
+
+        let exp = expectation(description: "Wait for background queue")
         DispatchQueue.global().async {
-            loader.completeLoading(with: [image], at: 0)
+            loader.completeLoading(at: 0)
             exp.fulfill()
         }
-
+        wait(for: [exp], timeout: 1.0)
+    }
+    
+    func test_loadImageDataCompletion_dispatchesFromBackgroundToMainThread() {
+        let (sut, loader) = makeSUT()
+        
+        sut.loadViewIfNeeded()
+        loader.completeLoading(with: [makeFeedImage()], at: 0)
+        sut.simulateFeedImageVisible(at: 0)
+        
+        let exp = expectation(description: "Wait for background queue")
+        DispatchQueue.global().async {
+            loader.completeLoadingImage(with: self.anyImageData(), at: 0)
+            exp.fulfill()
+        }
         wait(for: [exp], timeout: 1.0)
     }
 

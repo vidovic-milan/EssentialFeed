@@ -7,7 +7,7 @@ public final class FeedUIComposer {
     public static func feedComposedWith(feedLoader: FeedLoader, imageLoader: FeedImageDataLoader) -> FeedViewController {
         let feedPresenterAdapter = FeedLoadingPresentationAdapter(feedLoader: MainQueueDispatchDecorator(decoratee: feedLoader))
         let controller = FeedViewController.make(delegate: feedPresenterAdapter, title: FeedPresenter.title)
-        let feedAdapter = FeedAdapter(controller: controller, imageLoader: imageLoader)
+        let feedAdapter = FeedAdapter(controller: controller, imageLoader: MainQueueDispatchDecorator(decoratee: imageLoader))
         let weakController = WeakReferenceBox(object: controller)
         let feedPresenter = FeedPresenter(feedView: feedAdapter, loadingView: weakController, errorView: weakController)
         feedPresenterAdapter.presenter = feedPresenter
