@@ -14,7 +14,7 @@ class FeedImageDataLoaderCacheDecorator: FeedImageDataLoader {
     }
 }
 
-class FeedImageDataLoaderCacheDecoratorTests: XCTestCase {
+class FeedImageDataLoaderCacheDecoratorTests: XCTestCase, FeedImageDataLoaderTestCase {
 
     func test_init_doesNotloadImage() {
         let (_, loader) = makeSUT()
@@ -125,10 +125,6 @@ class FeedImageDataLoaderCacheDecoratorTests: XCTestCase {
         addTeardownBlock { [weak instance] in
             XCTAssertNil(instance, "Instance should have been deallocated. Potential memory leak.", file: file, line: line)
         }
-    }
-
-    private func anyURL() -> URL {
-        return URL(string: "http://a-url.com")!
     }
 
     private func anyData() -> Data {

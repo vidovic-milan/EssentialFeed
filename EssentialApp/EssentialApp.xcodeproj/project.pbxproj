@@ -11,6 +11,7 @@
 		BE2505792ABB43CD003DB00E /* XCTestCase+FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2505782ABB43CD003DB00E /* XCTestCase+FeedLoader.swift */; };
 		BE25057D2ABB477B003DB00E /* FeedLoaderCacheDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE25057C2ABB477B003DB00E /* FeedLoaderCacheDecorator.swift */; };
 		BE25057F2ABB4842003DB00E /* FeedImageLoaderCacheDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE25057E2ABB4842003DB00E /* FeedImageLoaderCacheDecoratorTests.swift */; };
+		BE2505812ABB4929003DB00E /* XCTestCase+FeedImageDataLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2505802ABB4929003DB00E /* XCTestCase+FeedImageDataLoader.swift */; };
 		BE97FC892AB8915500292A64 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE97FC882AB8915500292A64 /* AppDelegate.swift */; };
 		BE97FC8B2AB8915500292A64 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE97FC8A2AB8915500292A64 /* SceneDelegate.swift */; };
 		BE97FC902AB8915500292A64 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE97FC8E2AB8915500292A64 /* Main.storyboard */; };
@@ -56,6 +57,7 @@
 		BE2505782ABB43CD003DB00E /* XCTestCase+FeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+FeedLoader.swift"; sourceTree = "<group>"; };
 		BE25057C2ABB477B003DB00E /* FeedLoaderCacheDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoaderCacheDecorator.swift; sourceTree = "<group>"; };
 		BE25057E2ABB4842003DB00E /* FeedImageLoaderCacheDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedImageLoaderCacheDecoratorTests.swift; sourceTree = "<group>"; };
+		BE2505802ABB4929003DB00E /* XCTestCase+FeedImageDataLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+FeedImageDataLoader.swift"; sourceTree = "<group>"; };
 		BE97FC852AB8915500292A64 /* EssentialApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EssentialApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE97FC882AB8915500292A64 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BE97FC8A2AB8915500292A64 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 			isa = PBXGroup;
 			children = (
 				BE2505782ABB43CD003DB00E /* XCTestCase+FeedLoader.swift */,
+				BE2505802ABB4929003DB00E /* XCTestCase+FeedImageDataLoader.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -275,6 +278,7 @@
 				BE97FCA02AB8915700292A64 /* FeedLoaderWithFallbackCompositeTests.swift in Sources */,
 				BE2505762ABB42BE003DB00E /* FeedLoaderCacheDecoratorTests.swift in Sources */,
 				BE2505792ABB43CD003DB00E /* XCTestCase+FeedLoader.swift in Sources */,
+				BE2505812ABB4929003DB00E /* XCTestCase+FeedImageDataLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
