@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		BE2505762ABB42BE003DB00E /* FeedLoaderCacheDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2505752ABB42BE003DB00E /* FeedLoaderCacheDecoratorTests.swift */; };
 		BE2505792ABB43CD003DB00E /* XCTestCase+FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2505782ABB43CD003DB00E /* XCTestCase+FeedLoader.swift */; };
+		BE25057D2ABB477B003DB00E /* FeedLoaderCacheDecorator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE25057C2ABB477B003DB00E /* FeedLoaderCacheDecorator.swift */; };
 		BE97FC892AB8915500292A64 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE97FC882AB8915500292A64 /* AppDelegate.swift */; };
 		BE97FC8B2AB8915500292A64 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE97FC8A2AB8915500292A64 /* SceneDelegate.swift */; };
 		BE97FC902AB8915500292A64 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE97FC8E2AB8915500292A64 /* Main.storyboard */; };
@@ -52,6 +53,7 @@
 /* Begin PBXFileReference section */
 		BE2505752ABB42BE003DB00E /* FeedLoaderCacheDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoaderCacheDecoratorTests.swift; sourceTree = "<group>"; };
 		BE2505782ABB43CD003DB00E /* XCTestCase+FeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+FeedLoader.swift"; sourceTree = "<group>"; };
+		BE25057C2ABB477B003DB00E /* FeedLoaderCacheDecorator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoaderCacheDecorator.swift; sourceTree = "<group>"; };
 		BE97FC852AB8915500292A64 /* EssentialApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EssentialApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE97FC882AB8915500292A64 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BE97FC8A2AB8915500292A64 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				BE97FC962AB8915600292A64 /* Info.plist */,
 				BE97FD422AB8B0A600292A64 /* FeedLoaderWithFallbackComposite.swift */,
 				BE97FD462AB8B68200292A64 /* FeedImageDataLoaderWithFallbackComposite.swift */,
+				BE25057C2ABB477B003DB00E /* FeedLoaderCacheDecorator.swift */,
 			);
 			path = EssentialApp;
 			sourceTree = "<group>";
@@ -255,6 +258,7 @@
 				BE97FD472AB8B68200292A64 /* FeedImageDataLoaderWithFallbackComposite.swift in Sources */,
 				BE97FC892AB8915500292A64 /* AppDelegate.swift in Sources */,
 				BE97FD432AB8B0A600292A64 /* FeedLoaderWithFallbackComposite.swift in Sources */,
+				BE25057D2ABB477B003DB00E /* FeedLoaderCacheDecorator.swift in Sources */,
 				BE97FC8B2AB8915500292A64 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
