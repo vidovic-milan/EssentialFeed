@@ -8,8 +8,8 @@ public class LocalFeedImageDataLoader {
     }
 }
 
-extension LocalFeedImageDataLoader {
-    public typealias SaveResult = Swift.Result<Void, Error>
+extension LocalFeedImageDataLoader: FeedImageDataCache {
+    public typealias SaveResult = FeedImageDataCache.Result
 
     public enum SaveError: Swift.Error {
         case failed
