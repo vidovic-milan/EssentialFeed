@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BE2505762ABB42BE003DB00E /* FeedLoaderCacheDecoratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2505752ABB42BE003DB00E /* FeedLoaderCacheDecoratorTests.swift */; };
+		BE2505792ABB43CD003DB00E /* XCTestCase+FeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE2505782ABB43CD003DB00E /* XCTestCase+FeedLoader.swift */; };
 		BE97FC892AB8915500292A64 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE97FC882AB8915500292A64 /* AppDelegate.swift */; };
 		BE97FC8B2AB8915500292A64 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE97FC8A2AB8915500292A64 /* SceneDelegate.swift */; };
 		BE97FC902AB8915500292A64 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BE97FC8E2AB8915500292A64 /* Main.storyboard */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		BE2505752ABB42BE003DB00E /* FeedLoaderCacheDecoratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedLoaderCacheDecoratorTests.swift; sourceTree = "<group>"; };
+		BE2505782ABB43CD003DB00E /* XCTestCase+FeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCTestCase+FeedLoader.swift"; sourceTree = "<group>"; };
 		BE97FC852AB8915500292A64 /* EssentialApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EssentialApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE97FC882AB8915500292A64 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BE97FC8A2AB8915500292A64 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -86,6 +88,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BE2505772ABB43B5003DB00E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BE2505782ABB43CD003DB00E /* XCTestCase+FeedLoader.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		BE97FC7C2AB8915500292A64 = {
 			isa = PBXGroup;
 			children = (
@@ -123,6 +133,7 @@
 		BE97FC9E2AB8915700292A64 /* EssentialAppTests */ = {
 			isa = PBXGroup;
 			children = (
+				BE2505772ABB43B5003DB00E /* Helpers */,
 				BE97FC9F2AB8915700292A64 /* FeedLoaderWithFallbackCompositeTests.swift */,
 				BE97FD442AB8B15200292A64 /* FeedImageDataLoaderWithFallbackCompositeTests.swift */,
 				BE2505752ABB42BE003DB00E /* FeedLoaderCacheDecoratorTests.swift */,
@@ -255,6 +266,7 @@
 				BE97FD452AB8B15200292A64 /* FeedImageDataLoaderWithFallbackCompositeTests.swift in Sources */,
 				BE97FCA02AB8915700292A64 /* FeedLoaderWithFallbackCompositeTests.swift in Sources */,
 				BE2505762ABB42BE003DB00E /* FeedLoaderCacheDecoratorTests.swift in Sources */,
+				BE2505792ABB43CD003DB00E /* XCTestCase+FeedLoader.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
