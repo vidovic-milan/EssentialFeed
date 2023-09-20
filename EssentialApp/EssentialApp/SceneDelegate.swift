@@ -9,13 +9,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let _ = (scene as? UIWindowScene) else { return }
 
-        let url = URL(string: "https://ile-api.essentialdeveloper.com/essential-feed/v1/feed")!
-        let session = URLSession (configuration: .ephemeral)
-        let client = URLSessionHTTPClient(session: session)
-        let feedLoader = RemoteFeedLoader(url: url, client: client)
-        let imageLoader = RemoteFeedImageLoader(client: client)
-        let feedViewController = FeedUIComposer.feedComposedWith(feedLoader: feedLoader, imageLoader: imageLoader)
-        window?.rootViewController = feedViewController
+        let remoteURL = URL(string: "https://static1.squarespace.com/static/5891c5b8d1758ec68ef5dbc2/t/5db4155a4fbade21d17ecd28/1572083034355/essential_app_feed.json")!
+
+        let remoteClient = URLSessionHTTPClient(session: URLSession(configuration: .ephemeral))
+        let remoteFeedLoader = RemoteFeedLoader(url: remoteURL, client: remoteClient)
+        let remoteImageLoader = RemoteFeedImageLoader(client: remoteClient)
+
+        window?.rootViewController = FeedUIComposer.feedComposedWith(
+            feedLoader: remoteFeedLoader,
+            imageLoader: remoteImageLoader)
     }
 }
 

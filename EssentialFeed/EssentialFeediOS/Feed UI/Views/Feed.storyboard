@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="0BB-Mh-518">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="0BB-Mh-518">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -83,6 +84,7 @@
                                                     <subviews>
                                                         <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="1HI-O8-BCu">
                                                             <rect key="frame" x="0.0" y="0.0" width="361" height="361"/>
+                                                            <accessibility key="accessibilityConfiguration" identifier="feed-image-view"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" secondItem="1HI-O8-BCu" secondAttribute="height" multiplier="1:1" id="Ure-1x-jYo"/>
                                                             </constraints>
@@ -136,6 +138,9 @@
                                         <constraint firstAttribute="trailing" secondItem="At0-XF-duf" secondAttribute="trailing" constant="16" id="ZQg-rt-bkY"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <accessibility key="accessibilityConfiguration" identifier="feed-image-cell">
+                                    <bool key="isElement" value="NO"/>
+                                </accessibility>
                                 <connections>
                                     <outlet property="descriptionLabel" destination="Sez-wl-cgp" id="UIi-IN-H6V"/>
                                     <outlet property="feedImageContainer" destination="hKQ-mA-i1b" id="bvW-rT-7cc"/>
