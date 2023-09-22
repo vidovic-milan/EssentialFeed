@@ -17,7 +17,6 @@ public final class FeedViewController: UITableViewController, FeedLoadingView, F
     public override func viewDidLoad() {
         super.viewDidLoad()
         delegate?.didRequestFeedRefresh()
-        view.backgroundColor = .white
     }
 
     public override func viewDidLayoutSubviews() {
