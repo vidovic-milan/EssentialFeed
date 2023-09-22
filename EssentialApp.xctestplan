@@ -18,9 +18,6 @@
   },
   "testTargets" : [
     {
-      "skippedTests" : [
-        "FeedSnapshotTests\/test_feedWithFailedImageLoading()"
-      ],
       "target" : {
         "containerPath" : "container:EssentialApp.xcodeproj",
         "identifier" : "BE97FC9A2AB8915700292A64",

@@ -383,6 +383,8 @@ class FeedUIIntegrationTests: XCTestCase {
             return
         }
         assertThat(sut, hasRenderedCorrectly: feed, file: file, line: line)
+
+        RunLoop.current.run(until: Date())
     }
 
     private func assertThat(_ sut: FeedViewController, hasRenderedCorrectly feed: [FeedImage], file: StaticString = #file, line: UInt = #line) {
