@@ -35,6 +35,7 @@
 		BEE999582ABDE3930052B8CD /* FeedViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE999572ABDE3930052B8CD /* FeedViewController+Helpers.swift */; };
 		BEE9995B2ABDEACD0052B8CD /* FeedSnapshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE999592ABDEACA0052B8CD /* FeedSnapshotTests.swift */; };
 		BEE9995E2ABDEB170052B8CD /* EMPTY_FEED.png in Resources */ = {isa = PBXBuildFile; fileRef = BEE9995D2ABDEB170052B8CD /* EMPTY_FEED.png */; };
+		BEE999602ABDEBE90052B8CD /* FEED_WITH_CONTENT.png in Resources */ = {isa = PBXBuildFile; fileRef = BEE9995F2ABDEBE90052B8CD /* FEED_WITH_CONTENT.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +93,7 @@
 		BEE999572ABDE3930052B8CD /* FeedViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FeedViewController+Helpers.swift"; sourceTree = "<group>"; };
 		BEE999592ABDEACA0052B8CD /* FeedSnapshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedSnapshotTests.swift; sourceTree = "<group>"; };
 		BEE9995D2ABDEB170052B8CD /* EMPTY_FEED.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EMPTY_FEED.png; sourceTree = "<group>"; };
+		BEE9995F2ABDEBE90052B8CD /* FEED_WITH_CONTENT.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FEED_WITH_CONTENT.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -193,6 +195,7 @@
 			isa = PBXGroup;
 			children = (
 				BEE9995D2ABDEB170052B8CD /* EMPTY_FEED.png */,
+				BEE9995F2ABDEBE90052B8CD /* FEED_WITH_CONTENT.png */,
 			);
 			path = snapshots;
 			sourceTree = "<group>";
@@ -290,6 +293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEE9995E2ABDEB170052B8CD /* EMPTY_FEED.png in Resources */,
+				BEE999602ABDEBE90052B8CD /* FEED_WITH_CONTENT.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
