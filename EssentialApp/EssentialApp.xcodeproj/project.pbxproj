@@ -37,6 +37,7 @@
 		BEE9995E2ABDEB170052B8CD /* EMPTY_FEED.png in Resources */ = {isa = PBXBuildFile; fileRef = BEE9995D2ABDEB170052B8CD /* EMPTY_FEED.png */; };
 		BEE999602ABDEBE90052B8CD /* FEED_WITH_CONTENT.png in Resources */ = {isa = PBXBuildFile; fileRef = BEE9995F2ABDEBE90052B8CD /* FEED_WITH_CONTENT.png */; };
 		BEE999642ABDEF570052B8CD /* FEED_WITH_ERROR_MESSAGE.png in Resources */ = {isa = PBXBuildFile; fileRef = BEE999632ABDEF560052B8CD /* FEED_WITH_ERROR_MESSAGE.png */; };
+		BEE999662ABDF3700052B8CD /* FEED_WITH_FAILED_IMAGE_LOADING.png in Resources */ = {isa = PBXBuildFile; fileRef = BEE999652ABDF3700052B8CD /* FEED_WITH_FAILED_IMAGE_LOADING.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -96,6 +97,7 @@
 		BEE9995D2ABDEB170052B8CD /* EMPTY_FEED.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EMPTY_FEED.png; sourceTree = "<group>"; };
 		BEE9995F2ABDEBE90052B8CD /* FEED_WITH_CONTENT.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FEED_WITH_CONTENT.png; sourceTree = "<group>"; };
 		BEE999632ABDEF560052B8CD /* FEED_WITH_ERROR_MESSAGE.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FEED_WITH_ERROR_MESSAGE.png; sourceTree = "<group>"; };
+		BEE999652ABDF3700052B8CD /* FEED_WITH_FAILED_IMAGE_LOADING.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FEED_WITH_FAILED_IMAGE_LOADING.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -199,6 +201,7 @@
 				BEE9995D2ABDEB170052B8CD /* EMPTY_FEED.png */,
 				BEE9995F2ABDEBE90052B8CD /* FEED_WITH_CONTENT.png */,
 				BEE999632ABDEF560052B8CD /* FEED_WITH_ERROR_MESSAGE.png */,
+				BEE999652ABDF3700052B8CD /* FEED_WITH_FAILED_IMAGE_LOADING.png */,
 			);
 			path = snapshots;
 			sourceTree = "<group>";
@@ -298,6 +301,7 @@
 				BEE9995E2ABDEB170052B8CD /* EMPTY_FEED.png in Resources */,
 				BEE999642ABDEF570052B8CD /* FEED_WITH_ERROR_MESSAGE.png in Resources */,
 				BEE999602ABDEBE90052B8CD /* FEED_WITH_CONTENT.png in Resources */,
+				BEE999662ABDF3700052B8CD /* FEED_WITH_FAILED_IMAGE_LOADING.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
