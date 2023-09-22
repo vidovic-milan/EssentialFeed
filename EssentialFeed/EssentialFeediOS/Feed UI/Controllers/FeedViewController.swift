@@ -20,6 +20,12 @@ public final class FeedViewController: UITableViewController, FeedLoadingView, F
         view.backgroundColor = .white
     }
 
+    public override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        tableView.sizeTableHeaderToFit()
+    }
+
     @IBAction private func refresh() {
         delegate?.didRequestFeedRefresh()
     }
