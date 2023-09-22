@@ -1,7 +1,6 @@
 import CoreData
 import UIKit
 import EssentialFeed
-import EssentialFeediOS
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 

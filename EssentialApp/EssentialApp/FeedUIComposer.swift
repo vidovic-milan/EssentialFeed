@@ -1,5 +1,6 @@
 import UIKit
 import EssentialFeed
+import EssentialFeediOS
 
 public final class FeedUIComposer {
     private init() {}
@@ -62,13 +63,13 @@ private class FeedAdapter: FeedView {
     }
 
     func display(_ viewModel: FeedViewModel) {
-        controller?.cellControllers = viewModel.feed.map { feedImage in
+        controller?.display(viewModel.feed.map { feedImage in
             let adapter = FeedImagePresentationAdapter<UIImage, WeakReferenceBox<FeedImageCellController>>(model: feedImage, imageLoader: imageLoader)
             let view = FeedImageCellController(delegate: adapter)
             let presenter = FeedImagePresenter(feedImageView: WeakReferenceBox(object: view), transformImage: UIImage.init)
             adapter.presenter = presenter
             return view
-        }
+        })
     }
 }
 
