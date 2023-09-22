@@ -10,6 +10,8 @@ public final class FeedViewController: UITableViewController, FeedLoadingView, F
 
     public var delegate: FeedViewControllerDelegate?
 
+    private var loadingControllers = [IndexPath: FeedImageCellController]()
+
     private var cellControllers = [FeedImageCellController]() {
         didSet { tableView.reloadData( )}
     }
@@ -30,6 +32,7 @@ public final class FeedViewController: UITableViewController, FeedLoadingView, F
     }
 
     public func display(_ cellControllers: [FeedImageCellController]) {
+        self.loadingControllers = [:]
         self.cellControllers = cellControllers
     }
 
@@ -74,10 +77,13 @@ public final class FeedViewController: UITableViewController, FeedLoadingView, F
     }
 
     private func cancelLoadingCell(at indexPath: IndexPath) {
-        cellControllers[indexPath.row].cancel()
+        loadingControllers[indexPath]?.cancel()
+        loadingControllers[indexPath] = nil
     }
 
     private func loadCellController(at indexPath: IndexPath) -> FeedImageCellController {
-        return cellControllers[indexPath.row]
+        let controller = cellControllers[indexPath.row]
+        loadingControllers[indexPath] = controller
+        return controller
     }
 }
